@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/x-icon" href="./images/logo.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MysteryT</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <style>
+    .glow-btn:hover { box-shadow: 0 0 15px rgba(255,255,255,0.8), 0 0 30px rgba(99,102,241,0.6); }
+    .tilt-card { perspective: 1000px; }
+    .tilt-inner { transform-style: preserve-3d; transition: transform 0.2s ease-out; }
+    @media (max-width: 640px) { h1 { font-size: 2.5rem; } h2 { font-size: 1.8rem; } p { font-size: 0.9rem; } }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white font-sans">
+
+  <!-- Language Switcher with Public IP -->
+  <div class="p-4 text-right max-w-7xl mx-auto flex justify-between items-center">
+    <div>
+      <span class="text-sm public-ip-label">Your Public IP: </span>
+      <span id="public-ip-hidden" class="cursor-pointer text-sm" onclick="revealPublicIP()">Click to reveal</span>
+      <span id="public-ip" class="hidden text-sm"></span>
+    </div>
+    <div class="flex gap-2">
+      <button onclick="setLanguage('en'),updateAge()" class="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 transition glow-btn">EN</button>
+      <button onclick="setLanguage('hu'),updateAge()" class="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 transition glow-btn">HU</button>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="p-8 sm:p-12 text-center bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 shadow-2xl">
+    <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight drop-shadow-lg">MysteryT</h1>
+    <p id="header-subtitle" class="mt-3 text-gray-100 text-base sm:text-xl">Developer • Creator • Innovator</p>
+  </header>
+
+  <!-- About Section -->
+  <section class="p-6 sm:p-12 max-w-5xl mx-auto bg-gray-900/60 rounded-3xl shadow-lg my-12">
+    <h2 id="about-title" class="text-3xl sm:text-4xl font-bold mb-6 flex items-center gap-3"><i class="ph ph-user"></i> <span class="label-text">About MysteryT</span></h2>
+    <p id="about-text" class="text-gray-200 text-lg leading-relaxed">
+      <strong>MysteryT</strong> is the online alias of <strong>Péter</strong> who is a <strong id="kor"></strong> year old, passionate developer and creative innovator. He works with <strong>C, Lazarus, Python, GDevelop, Godot, HTML, CSS, and JavaScript</strong> to build interactive projects shared on GitHub and Itch.io.
+    </p>
+    <!-- Social Media -->
+    <div class="mt-6 flex justify-center gap-6">
+      <a href="https://github.com/MysteryTofficial" target="_blank" class="text-white hover:text-gray-300 text-2xl"><i class="ph ph-github-logo"></i></a>
+      <a href="https://www.youtube.com/@MysteryT_official" target="_blank" class="text-white hover:text-red-500 text-2xl"><i class="ph ph-youtube-logo"></i></a>
+      <a href="https://www.tiktok.com/@myst3ryt" target="_blank" class="text-white hover:text-pink-500 text-2xl"><i class="ph ph-tiktok-logo"></i></a>
+      <a href="https://myst3ryt.itch.io/" target="_blank" class="text-white hover:text-purple-400 text-2xl"><i class="ph ph-rocket-launch"></i></a>
+      <a href="https://steamcommunity.com/profiles/76561199436429551/" target="_blank" class="text-white hover:text-blue-400 text-2xl"><i class="ph ph-steam-logo"></i></a>
+      <a href="https://discord.gg/sFAE5XcPV3" target="_blank" class="text-white hover:text-green-400 text-2xl"><i class="ph ph-discord-logo"></i></a>
+    </div>
+  </section>
+
+  <!-- Portfolio Section -->
+  <section class="p-6 sm:p-12 max-w-7xl mx-auto">
+    <h2 id="repos-title" class="text-2xl sm:text-4xl font-bold mb-8 flex items-center gap-3"><i class="ph ph-github-logo"></i> <span class="label-text">Repositories</span></h2>
+    <div id="repo-list" class="grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"></div>
+  </section>
+
+  <!-- Hosted Projects Section -->
+  <section class="p-6 sm:p-12 max-w-7xl mx-auto">
+    <h2 id="projects-title" class="text-2xl sm:text-4xl font-bold mb-8 flex items-center gap-3"><i class="ph ph-browser"></i> <span class="label-text">Hosted Projects</span></h2>
+    <div id="project-list" class="grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"></div>
+  </section>
+
+  <!-- Itch.io Projects Section -->
+  <section class="p-6 sm:p-12 max-w-7xl mx-auto">
+    <h2 id="itch-title" class="text-2xl sm:text-4xl font-bold mb-8 flex items-center gap-3"><i class="ph ph-rocket-launch"></i> <span class="label-text">Itch.io Projects</span></h2>
+    <div id="itch-list" class="grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"></div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="p-6 sm:p-10 text-center text-gray-400 border-t border-gray-800 mt-12 bg-black/40">
+    <p id="footer-text" class="text-xs sm:text-sm">© <span id="year"></span> MysteryT (Péter). All rights reserverd</p>
+  </footer>
+
+  <script>
+    const username = "MysteryTofficial";
+    const itchUsername = "myst3ryt";
+    let currentLanguage = 'en';
+
+    const translations = {
+      en: {
+        headerSubtitle: "Developer • Creator • Innovator",
+        aboutTitle: "About MysteryT",
+        aboutText: "<strong>MysteryT</strong> is the online alias of <strong>Péter</strong> who is a <strong id='kor'></strong> year old, passionate developer and creative innovator. He works with <strong>C, Lazarus, Python, GDevelop, Godot, HTML, CSS, and JavaScript</strong> to build interactive projects shared on GitHub and Itch.io.",
+        reposTitle: "Repositories",
+        projectsTitle: "Hosted Projects",
+        itchTitle: "Itch.io Projects",
+        publicIP: "Your Public IP: ",
+        clickToReveal: "Click to reveal",
+        download: "Download",
+        view: "View",
+        hostedProject: "Hosted GitHub Project",
+        paidLabel: "$",
+      },
+      hu: {
+        headerSubtitle: "Fejlesztő • Létrehozó • Innovátor",
+        aboutTitle: "MysteryT-ről",
+        aboutText: "<strong>MysteryT</strong> Péter online álneve, aki egy <strong id='kor'></strong> éves szenvedélyes fejlesztő és kreatív innovátor. <strong>C, Lazarus, Python, GDevelop, Godot, HTML, CSS és JavaScript</strong> nyelveket használ az interaktív projektek létrehozásához, amelyeket a GitHubon és az Itch.io-n oszt meg.",
+        reposTitle: "Projektek",
+        projectsTitle: "Hosztolt Projektek",
+        itchTitle: "Itch.io Projektek",
+        publicIP: "A Te Nyilvános IP-d: ",
+        clickToReveal: "Kattints a megjelenítéshez",
+        download: "Letöltés",
+        view: "Megtekintés",
+        hostedProject: "Hosztolt GitHub Projekt",
+        paidLabel: "$",
+      }
+    };
+
+    function setLanguage(lang) {
+  currentLanguage = lang;
+  const t = translations[lang];
+
+  // Section subtitles (these overwrite the span inside headings, so icons stay)
+  document.querySelector('#about-title .label-text').innerHTML = t.aboutTitle;
+  document.querySelector('#repos-title .label-text').innerHTML = t.reposTitle;
+  document.querySelector('#projects-title .label-text').innerHTML = t.projectsTitle;
+  document.querySelector('#itch-title .label-text').innerHTML = t.itchTitle;
+
+  // Normal replacements (leave these as they were)
+  document.getElementById('header-subtitle').innerHTML = t.headerSubtitle;
+  document.getElementById('about-text').innerHTML = t.aboutText;
+  document.getElementById('public-ip-hidden').innerHTML = t.clickToReveal;
+  document.querySelector('.public-ip-label').innerHTML = t.publicIP;
+  
+  // Update dynamically created content (repos, projects, itch.io)
+  updateDynamicContent();
+}
+
+    function createCard({title, description, link, color, icon, extraButtonClass = "", extraButtonText = "", extraButtonHTML = "", viewLink = "", viewButtonText = ""}) {
+      const outer = document.createElement("div");
+      outer.className = "tilt-card";
+      const card = document.createElement("div");
+      card.className = `tilt-inner group p-6 rounded-3xl shadow-xl bg-gradient-to-br ${color} hover:scale-[1.04] hover:shadow-2xl transition transform flex flex-col justify-between`;
+      
+      // Add view button if viewLink is provided
+      const viewButton = viewLink ? 
+        `<a href="${viewLink}" target="_blank" class="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition text-sm glow-btn view-btn">${viewButtonText}</a>` : '';
+      
+      card.innerHTML = `
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <i class="ph ${icon} text-3xl"></i>
+            <h3 class="text-xl sm:text-2xl font-bold">${title}</h3>
+          </div>
+          <p class="text-gray-200 text-sm leading-relaxed mb-5 line-clamp-3">${description}</p>
+        </div>
+        <div class="flex gap-3 mt-auto flex-wrap">
+          <a href="${link}" target="_blank" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 transition text-sm glow-btn ${extraButtonClass}">${extraButtonText}</a>
+          ${viewButton}
+          ${extraButtonHTML}
+        </div>
+      `;
+      outer.appendChild(card);
+
+      outer.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        card.style.transform = `rotateY(${x * 0.1}deg) rotateX(${-y * 0.1}deg)`;
+      });
+      outer.addEventListener('mouseleave', () => { card.style.transform = 'rotateY(0deg) rotateX(0deg)'; });
+      return outer;
+    }
+
+    function updateDynamicContent() {
+      const t = translations[currentLanguage];
+      
+      // Update repo cards
+      document.querySelectorAll(".repo-card .download-btn").forEach(btn => {
+        btn.textContent = t.download;
+      });
+      
+      document.querySelectorAll(".repo-card .view-btn").forEach(btn => {
+        btn.textContent = t.view;
+      });
+      
+      // Update project cards
+      document.querySelectorAll(".project-card .hosted-label").forEach(el => {
+        el.textContent = t.hostedProject;
+      });
+      
+      // Update itch.io cards
+      document.querySelectorAll(".itch-card .download-btn").forEach(btn => {
+        btn.textContent = t.download;
+      });
+    }
+
+    async function fetchRepos() {
+      const res = await fetch(`https://api.github.com/users/${username}/repos?sort=updated`);
+      const repos = await res.json();
+      const repoList = document.getElementById("repo-list");
+      const projectList = document.getElementById("project-list");
+      
+      // Clear existing content
+      repoList.innerHTML = "";
+      projectList.innerHTML = "";
+      
+      const t = translations[currentLanguage];
+      
+      repos.forEach(repo => {
+        const card = createCard({ 
+          title: repo.name, 
+          description: repo.description || "No description", 
+          link: repo.html_url, 
+          color: "from-gray-800 to-gray-700", 
+          icon: "ph-folder",
+          extraButtonClass: "download-btn",
+          extraButtonText: t.download,
+          viewLink: repo.html_url,
+          viewButtonText: t.view
+        });
+        card.classList.add("repo-card");
+        repoList.appendChild(card);
+        
+        if (repo.has_pages) { 
+          const projectCard = createCard({ 
+            title: repo.name, 
+            description: t.hostedProject, 
+            link: `https://${username}.github.io/${repo.name}/`, 
+            color: "from-green-700 to-green-600", 
+            icon: "ph-browser",
+            extraButtonClass: "hosted-label",
+            extraButtonText: t.hostedProject
+          });
+          projectCard.classList.add("project-card");
+          projectList.appendChild(projectCard); 
+        }
+      });
+    }
+
+    async function fetchItchGames() {
+      const itchList = document.getElementById("itch-list");
+      const t = translations[currentLanguage];
+      
+      // Clear existing content
+      itchList.innerHTML = "";
+      
+      try {
+        const res = await fetch(`https://corsproxy.io/?https://${itchUsername}.itch.io/feed`);
+        const text = await res.text();
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(text, "application/xml");
+        const items = xml.querySelectorAll("item");
+        
+        items.forEach(item => {
+          const title = item.querySelector("title")?.textContent || "Untitled Project";
+          const link = item.querySelector("link")?.textContent || "#";
+          const description = item.querySelector("description")?.textContent || "Itch.io Project";
+          const isPaid = description?.toLowerCase().includes("pay") || description?.toLowerCase().includes("purchase");
+          
+          const extraButtonHTML = isPaid ? 
+            `<span class="px-4 py-2 rounded-lg bg-red-600 text-sm paid-label">${t.paidLabel}</span>` : 
+            `<a href="${link}" target="_blank" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 transition text-sm glow-btn download-btn">${t.download}</a>`;
+          
+          const card = createCard({ 
+            title, 
+            description: description, 
+            link, 
+            color: "from-purple-800 to-pink-700", 
+            icon: "ph-rocket-launch",
+            extraButtonHTML: extraButtonHTML
+          });
+          card.classList.add("itch-card");
+          itchList.appendChild(card);
+        });
+      } catch (err) { 
+        console.error("Failed to load Itch.io projects:", err); 
+        itchList.innerHTML = `<p class="text-gray-400">Failed to load Itch.io projects</p>`;
+      }
+    }
+
+    async function getPublicIP() {
+      try {
+        const res = await fetch("https://api.ipify.org?format=json");
+        const data = await res.json();
+        document.getElementById("public-ip").textContent = data.ip;
+      } catch (err) {
+        document.getElementById("public-ip").textContent = "Error fetching IP";
+      }
+    }
+
+    function revealPublicIP() {
+      document.getElementById("public-ip-hidden").classList.add("hidden");
+      document.getElementById("public-ip").classList.remove("hidden");
+    }
+
+    function calculateAgeYear(birthYear) {
+    const currentYear = new Date().getFullYear();
+    return currentYear - birthYear;
+    }
+    
+    function updateAge() {
+    const myAge = calculateAgeYear(2008);
+    const korEl = document.getElementById("kor");
+    if(korEl) korEl.textContent = myAge;
+    }
+    
+    // Initialize the page
+    document.getElementById("year").textContent = new Date().getFullYear();
+    const myAge = calculateAgeYear(2008);
+    setLanguage('en'); // Set default language
+    updateAge();
+    fetchRepos();
+    fetchItchGames();
+    getPublicIP();
+  </script>
+</body>
+
+</html>
+
