@@ -64,11 +64,6 @@
     <div id="project-list" class="grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"></div>
   </section>
 
-  <!-- Itch.io Projects Section -->
-  <section class="p-6 sm:p-12 max-w-7xl mx-auto">
-    <h2 id="itch-title" class="text-2xl sm:text-4xl font-bold mb-8 flex items-center gap-3"><i class="ph ph-rocket-launch"></i> <span class="label-text">Itch.io Projects</span></h2>
-    <div id="itch-list" class="grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"></div>
-  </section>
 
   <!-- Footer -->
   <footer class="p-6 sm:p-10 text-center text-gray-400 border-t border-gray-800 mt-12 bg-black/40">
@@ -77,7 +72,6 @@
 
   <script>
     const username = "MysteryTofficial";
-    const itchUsername = "myst3ryt";
     let currentLanguage = 'en';
 
     const translations = {
@@ -87,7 +81,6 @@
         aboutText: "<strong>MysteryT</strong> is the online alias of <strong>Péter</strong> who is a <strong id='kor'></strong> year old, passionate developer and creative innovator. He works with <strong>C, Lazarus, Python, GDevelop, Godot, HTML, CSS, and JavaScript</strong> to build interactive projects shared on GitHub and Itch.io.",
         reposTitle: "Repositories",
         projectsTitle: "Hosted Projects",
-        itchTitle: "Itch.io Projects",
         publicIP: "Your Public IP: ",
         clickToReveal: "Click to reveal",
         download: "Download",
@@ -101,7 +94,6 @@
         aboutText: "<strong>MysteryT</strong> Péter online álneve, aki egy <strong id='kor'></strong> éves szenvedélyes fejlesztő és kreatív innovátor. <strong>C, Lazarus, Python, GDevelop, Godot, HTML, CSS és JavaScript</strong> nyelveket használ az interaktív projektek létrehozásához, amelyeket a GitHubon és az Itch.io-n oszt meg.",
         reposTitle: "Projektek",
         projectsTitle: "Hosztolt Projektek",
-        itchTitle: "Itch.io Projektek",
         publicIP: "A Te Nyilvános IP-d: ",
         clickToReveal: "Kattints a megjelenítéshez",
         download: "Letöltés",
@@ -119,7 +111,6 @@
   document.querySelector('#about-title .label-text').innerHTML = t.aboutTitle;
   document.querySelector('#repos-title .label-text').innerHTML = t.reposTitle;
   document.querySelector('#projects-title .label-text').innerHTML = t.projectsTitle;
-  document.querySelector('#itch-title .label-text').innerHTML = t.itchTitle;
 
   // Normal replacements (leave these as they were)
   document.getElementById('header-subtitle').innerHTML = t.headerSubtitle;
@@ -183,11 +174,6 @@
       document.querySelectorAll(".project-card .hosted-label").forEach(el => {
         el.textContent = t.hostedProject;
       });
-      
-      // Update itch.io cards
-      document.querySelectorAll(".itch-card .download-btn").forEach(btn => {
-        btn.textContent = t.download;
-      });
     }
 
     async function fetchRepos() {
@@ -233,47 +219,6 @@
       });
     }
 
-    async function fetchItchGames() {
-      const itchList = document.getElementById("itch-list");
-      const t = translations[currentLanguage];
-      
-      // Clear existing content
-      itchList.innerHTML = "";
-      
-      try {
-        const res = await fetch(`https://corsproxy.io/?https://${itchUsername}.itch.io/`);
-        const text = await res.text();
-        const parser = new DOMParser();
-        const xml = parser.parseFromString(text, "application/xml");
-        const items = xml.querySelectorAll("item");
-        
-        items.forEach(item => {
-          const title = item.querySelector("title")?.textContent || "Untitled Project";
-          const link = item.querySelector("link")?.textContent || "#";
-          const description = item.querySelector("description")?.textContent || "Itch.io Project";
-          const isPaid = description?.toLowerCase().includes("pay") || description?.toLowerCase().includes("purchase");
-          
-          const extraButtonHTML = isPaid ? 
-            `<span class="px-4 py-2 rounded-lg bg-red-600 text-sm paid-label">${t.paidLabel}</span>` : 
-            `<a href="${link}" target="_blank" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 transition text-sm glow-btn download-btn">${t.download}</a>`;
-          
-          const card = createCard({ 
-            title, 
-            description: description, 
-            link, 
-            color: "from-purple-800 to-pink-700", 
-            icon: "ph-rocket-launch",
-            extraButtonHTML: extraButtonHTML
-          });
-          card.classList.add("itch-card");
-          itchList.appendChild(card);
-        });
-      } catch (err) { 
-        console.error("Failed to load Itch.io projects:", err); 
-        itchList.innerHTML = `<p class="text-gray-400">Failed to load Itch.io projects</p>`;
-      }
-    }
-
     async function getPublicIP() {
       try {
         const res = await fetch("https://api.ipify.org?format=json");
@@ -306,11 +251,11 @@
     setLanguage('en'); // Set default language
     updateAge();
     fetchRepos();
-    fetchItchGames();
     getPublicIP();
   </script>
 </body>
 
 </html>
+
 
 
