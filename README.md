@@ -69,9 +69,3 @@ Változásnapló
 - Többnyelvű támogatás és reszponzív dizájn implementálva  
 
 
-### Installation / Deployment
-1. Clone the repository:  
-```bash
-git clone https://github.com/YourUsername/mysteryt-website.git
-
-
