@@ -6,7 +6,7 @@
 
 **Online Name:** MysteryT  
 **Real Name:** Péter  
-**Age:** 17  
+**Age:** 18
 **Roles:** Developer • Creator • Innovator  
 
 ### Overview
