@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/x-icon" href="./images/logo.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#05070d">
+  <title>404 — Signal Lost | MysteryT</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            body: ['Space Grotesk', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+          },
+          colors: { panel: '#0b101c', neon: '#18e3c8', volt: '#34d399' },
+        },
+      },
+    };
+  </script>
+  <style>
+    :root { color-scheme: dark; }
+    body {
+      font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+      background: #05070d; color: #e2e8f0; min-height: 100vh;
+    }
+    ::selection { background: rgba(24,227,200,.35); color: #fff; }
+    .circuit-bg {
+      position: fixed; inset: 0; z-index: -2; pointer-events: none;
+      background:
+        radial-gradient(900px 500px at 15% -10%, rgba(34,211,238,.14), transparent 60%),
+        radial-gradient(800px 600px at 110% 15%, rgba(24,227,200,.12), transparent 60%),
+        radial-gradient(700px 500px at 50% 120%, rgba(139,92,246,.10), transparent 60%),
+        #05070d;
+    }
+    .circuit-lines {
+      position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .10;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600' viewBox='0 0 600 600'%3E%3Cg stroke='%2322d3ee' stroke-width='2' fill='none'%3E%3Cpath d='M0 60 H180 V140 H380 V260 H600'/%3E%3Cpath d='M120 600 V480 H320 V360 H600'/%3E%3Cpath d='M0 300 H240 V200 H600'/%3E%3Cpath d='M600 60 H480 V180 H300 V300'/%3E%3Cpath d='M0 420 H160 V540 H400 V600'/%3E%3C/g%3E%3Cg fill='%2322d3ee'%3E%3Ccircle cx='180' cy='60' r='4'/%3E%3Ccircle cx='380' cy='140' r='4'/%3E%3Ccircle cx='320' cy='360' r='4'/%3E%3Ccircle cx='240' cy='200' r='4'/%3E%3Ccircle cx='480' cy='60' r='4'/%3E%3Ccircle cx='300' cy='180' r='4'/%3E%3Ccircle cx='160' cy='420' r='4'/%3E%3Ccircle cx='400' cy='540' r='4'/%3E%3C/g%3E%3C/svg%3E");
+      background-size: 600px 600px;
+      animation: drift 90s linear infinite;
+    }
+    @keyframes drift { to { background-position: 600px 600px; } }
+    .panel { background: rgba(11,16,28,.85); border: 1px solid rgba(34,211,238,.15); }
+    .blink { animation: blink 1.1s steps(1) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+    .glitch { position: relative; animation: glitch 3.5s infinite; }
+    @keyframes glitch {
+      0%,92%,100% { text-shadow: 0 0 24px rgba(34,211,238,.5); transform: none; }
+      93% { text-shadow: -3px 0 #f43f5e, 3px 0 #22d3ee; transform: translateX(2px); }
+      95% { text-shadow: 3px 0 #f43f5e, -3px 0 #22d3ee; transform: translateX(-2px); }
+      97% { text-shadow: -2px 0 #18e3c8, 2px 0 #a78bfa; transform: translateX(1px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .circuit-lines, .glitch, .blink { animation: none; }
+    }
+  </style>
+</head>
+<body class="font-body antialiased flex items-center justify-center px-4 py-16">
+  <div class="circuit-bg"></div>
+  <div class="circuit-lines"></div>
+
+  <main class="panel rounded-2xl max-w-xl w-full p-8 sm:p-10 text-center relative overflow-hidden">
+    <div class="flex items-center justify-between mb-6 font-mono text-xs text-slate-500">
+      <span class="flex items-center gap-2"><span class="inline-block w-2 h-2 rounded-full bg-red-500 animate-pulse"></span> <span id="err-code">ERR_ROUTE_NOT_FOUND</span></span>
+      <span>mysteryt@home:~</span>
+    </div>
+
+    <h1 class="glitch text-7xl sm:text-8xl font-bold text-cyan-400 tracking-tight">404</h1>
+
+    <div class="text-left font-mono text-sm leading-7 mt-8 text-slate-400 bg-black/40 rounded-lg border border-cyan-500/15 p-4">
+      <div><span class="text-volt">$</span> <span class="text-cyan-300">ping <span id="current-path" class="text-slate-300">/unknown</span></span></div>
+      <div id="msg1">[ FAIL ] Destination unreachable</div>
+      <div id="msg2">[ INFO ] Requested node does not exist on this board</div>
+      <div><span class="text-volt">~$</span> <span class="inline-block w-2 h-4 bg-cyan-400/70 blink align-middle"></span></div>
+    </div>
+
+    <p id="subtitle" class="mt-6 text-slate-400">The page you are looking for has been desoldered, moved, or never existed.</p>
+
+    <div class="mt-8 flex flex-wrap justify-center gap-3 font-mono text-sm">
+      <a href="/" id="home-btn" class="px-5 py-3 rounded-lg bg-cyan-500/15 border border-cyan-400/50 text-cyan-300 hover:bg-cyan-400/25 transition">
+        <i class="ph ph-house"></i> <span id="home-label">Return home</span>
+      </a>
+      <button onclick="history.back()" id="back-btn" class="px-5 py-3 rounded-lg border border-slate-600 text-slate-300 hover:bg-slate-700/50 transition">
+        <i class="ph ph-arrow-u-up-left"></i> <span id="back-label">Go back</span>
+      </button>
+    </div>
+
+    <div class="mt-8 flex justify-center gap-1 p-1 rounded-lg border border-cyan-500/20 font-mono text-sm w-max mx-auto">
+      <button onclick="setLang('en')" id="btn-en" class="px-3 py-1 rounded-md transition">EN</button>
+      <button onclick="setLang('hu')" id="btn-hu" class="px-3 py-1 rounded-md transition">HU</button>
+    </div>
+  </main>
+
+  <script>
+    const strings = {
+      en: {
+        title: '404 — Signal Lost | MysteryT',
+        subtitle: 'The page you are looking for has been desoldered, moved, or never existed.',
+        home: 'Return home', back: 'Go back',
+        msg1: '[ FAIL ] Destination unreachable',
+        msg2: '[ INFO ] Requested node does not exist on this board'
+      },
+      hu: {
+        title: '404 — Elveszett jel | MysteryT',
+        subtitle: 'A keresett oldalt kiforrasztottuk, áthelyeztük, vagy soha nem is létezett.',
+        home: 'Vissza a főoldalra', back: 'Vissza',
+        msg1: '[ HIBA ] Az úti cél elérhetetlen',
+        msg2: '[ INFÓ ] A kért csomópont nem található ezen a lapon'
+      }
+    };
+    let currentLanguage = localStorage.getItem('mysteryt_lang') || 'en';
+
+    function setLang(lang) {
+      currentLanguage = lang;
+      localStorage.setItem('mysteryt_lang', lang);
+      const s = strings[lang];
+      document.documentElement.lang = lang;
+      document.title = s.title;
+      document.getElementById('subtitle').textContent = s.subtitle;
+      document.getElementById('home-label').textContent = s.home;
+      document.getElementById('back-label').textContent = s.back;
+      document.getElementById('msg1').textContent = s.msg1;
+      document.getElementById('msg2').textContent = s.msg2;
+      document.getElementById('err-code').textContent = lang === 'hu' ? 'HIBA_ÚTVONAL_NEM_TALÁLHATÓ' : 'ERR_ROUTE_NOT_FOUND';
+      document.getElementById('btn-en').className = 'px-3 py-1 rounded-md transition ' + (lang === 'en' ? 'bg-cyan-500/20 text-cyan-300' : 'text-slate-400 hover:bg-cyan-500/10');
+      document.getElementById('btn-hu').className = 'px-3 py-1 rounded-md transition ' + (lang === 'hu' ? 'bg-cyan-500/20 text-cyan-300' : 'text-slate-400 hover:bg-cyan-500/10');
+    }
+
+    document.getElementById('current-path').textContent = location.pathname;
+    setLang(currentLanguage);
+  </script>
+</body>
+</html>
