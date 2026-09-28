@@ -4,258 +4,1043 @@
   <meta charset="UTF-8">
   <link rel="icon" type="image/x-icon" href="./images/logo.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MysteryT</title>
+  <meta name="description" content="MysteryT — Developer, creator and electronics enthusiast. C, Lazarus, Python, Godot, web technologies and PC hardware.">
+  <meta name="theme-color" content="#05070d">
+  <title>MysteryT — Engineer. Creator. Innovator.</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            body: ['Space Grotesk', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+          },
+          colors: {
+            panel: '#0b101c',
+            neon: '#18e3c8',
+            volt: '#34d399',
+          },
+        },
+      },
+    };
+  </script>
   <style>
-    .glow-btn:hover { box-shadow: 0 0 15px rgba(255,255,255,0.8), 0 0 30px rgba(99,102,241,0.6); }
-    .tilt-card { perspective: 1000px; }
-    .tilt-inner { transform-style: preserve-3d; transition: transform 0.2s ease-out; }
-    @media (max-width: 640px) { h1 { font-size: 2.5rem; } h2 { font-size: 1.8rem; } p { font-size: 0.9rem; } }
+    :root { color-scheme: dark; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+      background: #05070d;
+      color: #e2e8f0;
+    }
+    ::selection { background: rgba(24,227,200,.35); color: #fff; }
+
+    .circuit-bg {
+      position: fixed; inset: 0; z-index: -2; pointer-events: none;
+      background:
+        radial-gradient(900px 500px at 15% -10%, rgba(34,211,238,.14), transparent 60%),
+        radial-gradient(800px 600px at 110% 15%, rgba(24,227,200,.12), transparent 60%),
+        radial-gradient(700px 500px at 50% 120%, rgba(139,92,246,.10), transparent 60%),
+        #05070d;
+    }
+    .circuit-lines {
+      position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .10;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600' viewBox='0 0 600 600'%3E%3Cg stroke='%2322d3ee' stroke-width='2' fill='none'%3E%3Cpath d='M0 60 H180 V140 H380 V260 H600'/%3E%3Cpath d='M120 600 V480 H320 V360 H600'/%3E%3Cpath d='M0 300 H240 V200 H600'/%3E%3Cpath d='M600 60 H480 V180 H300 V300'/%3E%3Cpath d='M0 420 H160 V540 H400 V600'/%3E%3Cpath d='M300 0 V60 H120 V180'/%3E%3C/g%3E%3Cg fill='%2322d3ee'%3E%3Ccircle cx='180' cy='60' r='4'/%3E%3Ccircle cx='380' cy='140' r='4'/%3E%3Ccircle cx='320' cy='360' r='4'/%3E%3Ccircle cx='240' cy='200' r='4'/%3E%3Ccircle cx='480' cy='60' r='4'/%3E%3Ccircle cx='300' cy='180' r='4'/%3E%3Ccircle cx='160' cy='420' r='4'/%3E%3Ccircle cx='400' cy='540' r='4'/%3E%3Ccircle cx='120' cy='180' r='4'/%3E%3Ccircle cx='120' cy='480' r='4'/%3E%3C/g%3E%3C/svg%3E");
+      background-size: 600px 600px;
+    }
+    .grid-overlay {
+      position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .05;
+      background-image:
+        linear-gradient(rgba(226,232,240,.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(226,232,240,.12) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(circle at 50% 30%, black 0%, transparent 75%);
+    }
+
+    .glass { background: rgba(11,16,28,.7); backdrop-filter: blur(14px); }
+    .panel { background: rgba(11,16,28,.85); border: 1px solid rgba(34,211,238,.12); }
+    .panel-hover { transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease; }
+    .panel-hover:hover {
+      transform: translateY(-4px);
+      border-color: rgba(34,211,238,.45);
+      box-shadow: 0 12px 40px -12px rgba(34,211,238,.25);
+    }
+
+    .text-glow { text-shadow: 0 0 20px rgba(34,211,238,.45); }
+    .box-glow-cyan { box-shadow: 0 0 24px -6px rgba(34,211,238,.5); }
+    .box-glow-green { box-shadow: 0 0 24px -6px rgba(52,211,153,.5); }
+
+    .corner-tag {
+      position: relative;
+    }
+    .corner-tag::before, .corner-tag::after {
+      content: ""; position: absolute; width: 18px; height: 18px;
+      border: 2px solid rgba(34,211,238,.6);
+    }
+    .corner-tag::before { top: -1px; left: -1px; border-right: 0; border-bottom: 0; }
+    .corner-tag::after { bottom: -1px; right: -1px; border-left: 0; border-top: 0; }
+
+    .blink { animation: blink 1.1s steps(1) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .fade-up { opacity: 0; transform: translateY(26px); transition: opacity .7s ease, transform .7s ease; }
+    .fade-up.in-view { opacity: 1; transform: translateY(0); }
+
+    #scroll-progress {
+      position: fixed; top: 0; left: 0; height: 2px; width: 0;
+      background: linear-gradient(90deg, #22d3ee, #18e3c8, #a78bfa);
+      box-shadow: 0 0 12px rgba(34,211,238,.7);
+      z-index: 60; transition: width .1s linear;
+    }
+
+    #spotlight {
+      position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      background: radial-gradient(500px circle at var(--mx, 50%) var(--my, 30%), rgba(34,211,238,.07), transparent 70%);
+      transition: background .2s ease-out;
+    }
+
+    .name-shimmer {
+      background: linear-gradient(100deg, #ffffff 20%, #22d3ee 40%, #18e3c8 55%, #ffffff 75%);
+      background-size: 220% 100%;
+      -webkit-background-clip: text; background-clip: text;
+      color: transparent;
+      animation: shimmer 6s ease-in-out infinite;
+    }
+    @keyframes shimmer { 0%,100% { background-position: 200% 0; } 50% { background-position: 0 0; } }
+
+    .circuit-lines { animation: drift 90s linear infinite; }
+    @keyframes drift { to { background-position: 600px 600px; } }
+
+    .panel-hover { position: relative; overflow: hidden; }
+    .panel-hover::after {
+      content: ""; position: absolute; top: 0; left: -120%; width: 60%; height: 100%;
+      background: linear-gradient(100deg, transparent, rgba(34,211,238,.10), transparent);
+      transform: skewX(-18deg); transition: left .7s ease;
+    }
+    .panel-hover:hover::after { left: 130%; }
+
+    .nav-link { position: relative; }
+    .nav-link::after {
+      content: ""; position: absolute; left: 12px; right: 12px; bottom: 4px; height: 1.5px;
+      background: linear-gradient(90deg, #22d3ee, #18e3c8);
+      transform: scaleX(0); transform-origin: left; transition: transform .3s ease;
+    }
+    .nav-link:hover::after, .nav-link.active::after { transform: scaleX(1); }
+    .nav-link.active { color: #22d3ee; }
+
+    .marquee { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+    .marquee-track { display: flex; width: max-content; animation: marquee 32s linear infinite; }
+    .marquee:hover .marquee-track { animation-play-state: paused; }
+    @keyframes marquee { to { transform: translateX(-50%); } }
+
+    .lang-dot { width: 10px; height: 10px; border-radius: 9999px; display: inline-block; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fade-up { opacity: 1; transform: none; }
+      html { scroll-behavior: auto; }
+      .name-shimmer, .circuit-lines, .marquee-track { animation: none; }
+      .panel-hover::after { display: none; }
+    }
+
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: #05070d; }
+    ::-webkit-scrollbar-thumb { background: #1a2333; border-radius: 6px; }
+    ::-webkit-scrollbar-thumb:hover { background: #28405e; }
   </style>
 </head>
-<body class="bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white font-sans">
+<body class="font-body antialiased selection:bg-cyan-500/30">
 
-  <!-- Language Switcher with Public IP -->
-  <div class="p-4 text-right max-w-7xl mx-auto flex justify-between items-center">
-    <div>
-      <span class="text-sm public-ip-label">Your Public IP: </span>
-      <span id="public-ip-hidden" class="cursor-pointer text-sm" onclick="revealPublicIP()">Click to reveal</span>
-      <span id="public-ip" class="hidden text-sm"></span>
+  <div class="circuit-bg"></div>
+  <div class="circuit-lines"></div>
+  <div class="grid-overlay"></div>
+  <div id="spotlight"></div>
+  <div id="scroll-progress"></div>
+
+  <!-- NAV -->
+  <nav class="fixed top-0 inset-x-0 z-40 glass border-b border-cyan-500/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <a href="#home" class="flex items-center gap-2 font-mono font-bold text-cyan-400 text-lg group">
+        <i class="ph ph-cpu text-2xl group-hover:rotate-12 transition-transform"></i>
+        <span>MysteryT<span class="text-neon">_</span></span>
+      </a>
+      <div class="hidden md:flex items-center gap-1 font-mono text-sm text-slate-300">
+        <a href="#about" class="nav-link px-3 py-2 hover:text-cyan-400 transition data-i18n" data-i18n="navAbout">&lt;About&gt;</a>
+        <a href="#skills" class="nav-link px-3 py-2 hover:text-cyan-400 transition data-i18n" data-i18n="navSkills">&lt;Skills&gt;</a>
+        <a href="#repos" class="nav-link px-3 py-2 hover:text-cyan-400 transition data-i18n" data-i18n="navRepos">&lt;Projects&gt;</a>
+        <a href="#contact" class="nav-link px-3 py-2 hover:text-cyan-400 transition data-i18n" data-i18n="navContact">&lt;Contact&gt;</a>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="flex gap-1 p-1 rounded-lg border border-cyan-500/20 font-mono text-sm">
+          <button onclick="setLanguage('en')" id="btn-en" class="px-3 py-1 rounded-md transition text-cyan-300 hover:bg-cyan-500/10">EN</button>
+          <button onclick="setLanguage('hu')" id="btn-hu" class="px-3 py-1 rounded-md transition text-slate-400 hover:bg-cyan-500/10">HU</button>
+        </div>
+        <button id="mobile-menu-btn" class="md:hidden text-cyan-400 text-2xl p-1" aria-label="Menu">
+          <i class="ph ph-list"></i>
+        </button>
+      </div>
     </div>
-    <div class="flex gap-2">
-      <button onclick="setLanguage('en'),updateAge()" class="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 transition glow-btn">EN</button>
-      <button onclick="setLanguage('hu'),updateAge()" class="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 transition glow-btn">HU</button>
+    <div id="mobile-menu" class="hidden md:hidden border-t border-cyan-500/10 bg-panel/95">
+      <div class="px-6 py-4 flex flex-col gap-1 font-mono text-sm text-slate-300">
+        <a href="#about" class="nav-link py-2 hover:text-cyan-400 transition data-i18n" data-i18n="navAbout">&lt;About&gt;</a>
+        <a href="#skills" class="nav-link py-2 hover:text-cyan-400 transition data-i18n" data-i18n="navSkills">&lt;Skills&gt;</a>
+        <a href="#repos" class="nav-link py-2 hover:text-cyan-400 transition data-i18n" data-i18n="navRepos">&lt;Projects&gt;</a>
+        <a href="#contact" class="nav-link py-2 hover:text-cyan-400 transition data-i18n" data-i18n="navContact">&lt;Contact&gt;</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header id="home" class="relative min-h-screen flex items-center pt-28 pb-20 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-14 items-center w-full">
+      <div>
+        <p class="font-mono text-neon text-sm mb-4 flex items-center gap-2">
+          <span class="inline-block w-2 h-2 rounded-full bg-neon animate-pulse"></span>
+          <span data-i18n="sysOnline">SYSTEM&nbsp;ONLINE</span>
+          <span class="text-slate-500">//</span>
+          <span>v3.0</span>
+        </p>
+        <h1 class="text-5xl sm:text-7xl font-bold tracking-tight text-white">
+          <span class="name-shimmer">MysteryT</span><span class="text-cyan-400 text-glow">.</span>
+        </h1>
+        <div class="font-mono mt-5 text-lg sm:text-2xl text-cyan-300 min-h-[2rem]">
+          <span class="text-slate-500">$&gt;</span>
+          <span id="typewriter">Developer</span><span class="blink">▋</span>
+        </div>
+        <p class="mt-6 text-slate-400 text-lg max-w-xl leading-relaxed" data-i18n="heroText">
+          I design, build and tinker with software, electronics and computers — turning ideas into interactive engineering.
+        </p>
+        <div class="mt-9 flex flex-wrap gap-4">
+          <a href="#repos" class="px-6 py-3 rounded-lg font-mono font-bold text-base border border-cyan-400/50 text-cyan-300 hover:bg-cyan-400/10 transition">
+            <i class="ph ph-terminal-window"></i> <span data-i18n="ctaProjects">view projects</span>
+          </a>
+          <a href="#contact" class="px-6 py-3 rounded-lg font-mono font-bold text-base bg-cyan-500/15 text-neon border border-neon/40 hover:bg-neon/20 transition">
+            <i class="ph ph-paper-plane-tilt"></i> <span data-i18n="ctaContact">get in touch</span>
+          </a>
+        </div>
+        <div class="mt-10 flex flex-wrap gap-x-8 gap-y-3 font-mono text-sm text-slate-500">
+          <span><i class="ph ph-map-pin text-cyan-500/70"></i> <span data-i18n="loc">Hungary</span></span>
+          <span><i class="ph ph-laptop text-cyan-500/70"></i> <span data-i18n="spec">PC &amp; electronics</span></span>
+          <span><i class="ph ph-linkedin-logo text-cyan-500/70"></i> <span class="text-slate-500" data-i18n="open">open to collaboration</span></span>
+        </div>
+      </div>
+
+      <div class="panel corner-tag rounded-xl p-5 font-mono text-sm leading-7 shadow-2xl relative fade-up">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
+          <span class="w-3 h-3 rounded-full bg-amber-400/80"></span>
+          <span class="w-3 h-3 rounded-full bg-green-500/80"></span>
+          <span class="ml-3 text-slate-500 text-xs">mysteryt@home: ~</span>
+        </div>
+        <div><span class="text-volt">$</span> <span class="text-cyan-300">./init --profile mysteryt</span></div>
+        <div class="text-slate-400">[ OK ] Loading profile...</div>
+        <div class="text-slate-400">[ OK ] <span data-i18n="termRole">Role detected</span>: <span class="text-cyan-300" id="term-role">Developer</span></div>
+        <div class="text-slate-400">[ OK ] <span data-i18n="termLang">Language stack</span>: C · Python · Pascal · JS</div>
+        <div class="text-slate-400">[ OK ] <span data-i18n="termHw">Hardware stack</span>: CPU · RAM · GPU · Solder</div>
+        <div class="text-neon">[ OK ] <span data-i18n="termStatus">System ready</span> ─ <span class="inline-block w-2 h-2 rounded-full bg-neon animate-pulse align-middle"></span></div>
+        <div class="mt-3 border-t border-cyan-500/20 pt-3 text-slate-500">
+          <span class="text-volt">~$</span> <span class="inline-block w-2 h-4 bg-cyan-400/70 blink align-middle"></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- TECH MARQUEE -->
+  <div class="marquee relative z-10 border-y border-cyan-500/10 bg-black/30 py-4">
+    <div class="marquee-track items-center gap-10 font-mono text-sm uppercase tracking-widest text-slate-500">
+      <span class="flex items-center gap-2"><i class="ph ph-cpu text-cyan-500/70"></i> C</span>
+      <span class="flex items-center gap-2"><i class="ph ph-terminal-window text-cyan-500/70"></i> Lazarus</span>
+      <span class="flex items-center gap-2"><i class="ph ph-code text-cyan-500/70"></i> Python</span>
+      <span class="flex items-center gap-2"><i class="ph ph-joystick text-cyan-500/70"></i> GDevelop</span>
+      <span class="flex items-center gap-2"><i class="ph ph-game-controller text-cyan-500/70"></i> Godot</span>
+      <span class="flex items-center gap-2"><i class="ph ph-file-html text-cyan-500/70"></i> HTML5</span>
+      <span class="flex items-center gap-2"><i class="ph ph-palette text-cyan-500/70"></i> CSS3</span>
+      <span class="flex items-center gap-2"><i class="ph ph-brackets-curly text-cyan-500/70"></i> JavaScript</span>
+      <span class="flex items-center gap-2"><i class="ph ph-circuit-board text-cyan-500/70"></i> Electronics</span>
+      <span class="flex items-center gap-2"><i class="ph ph-microchip text-cyan-500/70"></i> Arduino</span>
+      <span class="flex items-center gap-2"><i class="ph ph-memory text-cyan-500/70"></i> PC Hardware</span>
+      <span class="flex items-center gap-2"><i class="ph ph-git-branch text-cyan-500/70"></i> Git</span>
+      <span class="flex items-center gap-2"><i class="ph ph-linux-logo text-cyan-500/70"></i> Linux</span>
+      <span class="flex items-center gap-2"><i class="ph ph-github-logo text-cyan-500/70"></i> GitHub</span>
+      <span class="flex items-center gap-2"><i class="ph ph-cpu text-cyan-500/70"></i> C</span>
+      <span class="flex items-center gap-2"><i class="ph ph-terminal-window text-cyan-500/70"></i> Lazarus</span>
+      <span class="flex items-center gap-2"><i class="ph ph-code text-cyan-500/70"></i> Python</span>
+      <span class="flex items-center gap-2"><i class="ph ph-joystick text-cyan-500/70"></i> GDevelop</span>
+      <span class="flex items-center gap-2"><i class="ph ph-game-controller text-cyan-500/70"></i> Godot</span>
+      <span class="flex items-center gap-2"><i class="ph ph-file-html text-cyan-500/70"></i> HTML5</span>
+      <span class="flex items-center gap-2"><i class="ph ph-palette text-cyan-500/70"></i> CSS3</span>
+      <span class="flex items-center gap-2"><i class="ph ph-brackets-curly text-cyan-500/70"></i> JavaScript</span>
+      <span class="flex items-center gap-2"><i class="ph ph-circuit-board text-cyan-500/70"></i> Electronics</span>
+      <span class="flex items-center gap-2"><i class="ph ph-microchip text-cyan-500/70"></i> Arduino</span>
+      <span class="flex items-center gap-2"><i class="ph ph-memory text-cyan-500/70"></i> PC Hardware</span>
+      <span class="flex items-center gap-2"><i class="ph ph-git-branch text-cyan-500/70"></i> Git</span>
+      <span class="flex items-center gap-2"><i class="ph ph-linux-logo text-cyan-500/70"></i> Linux</span>
+      <span class="flex items-center gap-2"><i class="ph ph-github-logo text-cyan-500/70"></i> GitHub</span>
     </div>
   </div>
 
-  <!-- Header -->
-  <header class="p-8 sm:p-12 text-center bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 shadow-2xl">
-    <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight drop-shadow-lg">MysteryT</h1>
-    <p id="header-subtitle" class="mt-3 text-gray-100 text-base sm:text-xl">Developer • Creator • Innovator</p>
-  </header>
-
-  <!-- About Section -->
-  <section class="p-6 sm:p-12 max-w-5xl mx-auto bg-gray-900/60 rounded-3xl shadow-lg my-12">
-    <h2 id="about-title" class="text-3xl sm:text-4xl font-bold mb-6 flex items-center gap-3"><i class="ph ph-user"></i> <span class="label-text">About MysteryT</span></h2>
-    <p id="about-text" class="text-gray-200 text-lg leading-relaxed">
-      <strong>MysteryT</strong> is the online alias of <strong>Péter</strong> who is a <strong id="kor"></strong> year old, passionate developer and creative innovator. He works with <strong>C, Lazarus, Python, GDevelop, Godot, HTML, CSS, and JavaScript</strong> to build interactive projects shared on GitHub and Itch.io.
-    </p>
-    <!-- Social Media -->
-    <div class="mt-6 flex justify-center gap-6">
-      <a href="https://github.com/MysteryTofficial" target="_blank" class="text-white hover:text-gray-300 text-2xl"><i class="ph ph-github-logo"></i></a>
-      <a href="https://www.youtube.com/@MysteryT_official" target="_blank" class="text-white hover:text-red-500 text-2xl"><i class="ph ph-youtube-logo"></i></a>
-      <a href="https://www.tiktok.com/@myst3ryt" target="_blank" class="text-white hover:text-pink-500 text-2xl"><i class="ph ph-tiktok-logo"></i></a>
-      <a href="https://myst3ryt.itch.io/" target="_blank" class="text-white hover:text-purple-400 text-2xl"><i class="ph ph-rocket-launch"></i></a>
-      <a href="https://steamcommunity.com/profiles/76561199436429551/" target="_blank" class="text-white hover:text-blue-400 text-2xl"><i class="ph ph-steam-logo"></i></a>
-      <a href="https://discord.gg/sFAE5XcPV3" target="_blank" class="text-white hover:text-green-400 text-2xl"><i class="ph ph-discord-logo"></i></a>
+  <!-- ABOUT -->
+  <section id="about" class="max-w-7xl mx-auto px-4 sm:px-6 py-20">
+    <div class="flex items-center gap-3 mb-2 font-mono text-cyan-400 text-sm">
+      <span class="text-slate-600">01/</span>
+      <h2 class="text-2xl sm:text-3xl font-mono font-bold">
+        <i class="ph ph-user"></i> <span data-i18n="aboutTitle">about</span><span class="text-neon">_</span>
+      </h2>
+    </div>
+    <div class="panel rounded-xl p-8 mt-6 fade-up">
+      <p id="about-text" class="text-slate-300 text-lg leading-relaxed max-w-4xl"></p>
+      <div class="stagger grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+        <div class="fade-up border border-cyan-500/15 rounded-lg p-4 text-center hover:border-cyan-400/40 transition">
+          <div class="text-3xl font-mono font-bold text-cyan-400" id="stat-age" data-count>0</div>
+          <div class="font-mono text-xs text-slate-500 mt-1 data-i18n" data-i18n="statAge">years old</div>
+        </div>
+        <div class="fade-up border border-cyan-500/15 rounded-lg p-4 text-center hover:border-cyan-400/40 transition">
+          <div class="text-3xl font-mono font-bold text-neon" data-count="8" data-suffix="+">0</div>
+          <div class="font-mono text-xs text-slate-500 mt-1 data-i18n" data-i18n="statTools">technologies</div>
+        </div>
+        <div class="fade-up border border-cyan-500/15 rounded-lg p-4 text-center hover:border-cyan-400/40 transition">
+          <div class="text-3xl font-mono font-bold text-volt" id="stat-repos" data-count>0</div>
+          <div class="font-mono text-xs text-slate-500 mt-1 data-i18n" data-i18n="statProjects">public repos</div>
+        </div>
+        <div class="fade-up border border-cyan-500/15 rounded-lg p-4 text-center hover:border-cyan-400/40 transition">
+          <div class="text-3xl font-mono font-bold text-amber-400" data-count="6">0</div>
+          <div class="font-mono text-xs text-slate-500 mt-1 data-i18n" data-i18n="statSocials">social platforms</div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Portfolio Section -->
-  <section class="p-6 sm:p-12 max-w-7xl mx-auto">
-    <h2 id="repos-title" class="text-2xl sm:text-4xl font-bold mb-8 flex items-center gap-3"><i class="ph ph-github-logo"></i> <span class="label-text">Repositories</span></h2>
-    <div id="repo-list" class="grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"></div>
+  <!-- SKILLS -->
+  <section id="skills" class="max-w-7xl mx-auto px-4 sm:px-6 py-20">
+    <div class="flex items-center gap-3 mb-2 font-mono text-cyan-400 text-sm">
+      <span class="text-slate-600">02/</span>
+      <h2 class="text-2xl sm:text-3xl font-mono font-bold">
+        <i class="ph ph-cpu"></i> <span data-i18n="skillsTitle">skills</span><span class="text-neon">_</span>
+      </h2>
+    </div>
+    <div class="stagger grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-6" id="skills-grid">
+      <div class="panel panel-hover rounded-xl p-5 fade-up">
+        <div class="flex items-center gap-3 mb-3"><i class="ph ph-file-c text-3xl text-cyan-400"></i><span class="font-mono font-bold text-white">C</span></div>
+        <p class="text-slate-400 text-sm data-i18n" data-i18n="skillC">Low-level, system software and tooling.</p>
+      </div>
+      <div class="panel panel-hover rounded-xl p-5 fade-up">
+        <div class="flex items-center gap-3 mb-3"><i class="ph ph-terminal-window text-3xl text-cyan-400"></i><span class="font-mono font-bold text-white">Lazarus / Pascal</span></div>
+        <p class="text-slate-400 text-sm data-i18n" data-i18n="skillPascal">Desktop GUI applications that just work.</p>
+      </div>
+      <div class="panel panel-hover rounded-xl p-5 fade-up">
+        <div class="flex items-center gap-3 mb-3"><i class="ph ph-code text-3xl text-neon"></i><span class="font-mono font-bold text-white">Python</span></div>
+        <p class="text-slate-400 text-sm data-i18n" data-i18n="skillPython">Home automation, bots, automation scripts.</p>
+      </div>
+      <div class="panel panel-hover rounded-xl p-5 fade-up">
+        <div class="flex items-center gap-3 mb-3"><i class="ph ph-joystick text-3xl text-volt"></i><span class="font-mono font-bold text-white">GDevelop / Godot</span></div>
+        <p class="text-slate-400 text-sm data-i18n" data-i18n="skillGame">2D game development and interactive demos.</p>
+      </div>
+      <div class="panel panel-hover rounded-xl p-5 fade-up">
+        <div class="flex items-center gap-3 mb-3"><i class="ph ph-file-html text-3xl text-amber-400"></i><span class="font-mono font-bold text-white">HTML / CSS / JS</span></div>
+        <p class="text-slate-400 text-sm data-i18n" data-i18n="skillWeb">Modern, responsive and themeable web.</p>
+      </div>
+      <div class="panel panel-hover rounded-xl p-5 fade-up">
+        <div class="flex items-center gap-3 mb-3"><i class="ph ph-circuit-board text-3xl text-cyan-400"></i><span class="font-mono font-bold text-white">Electronics</span></div>
+        <p class="text-slate-400 text-sm data-i18n" data-i18n="skillElec">Circuit design, microcontrollers, soldering.</p>
+      </div>
+      <div class="panel panel-hover rounded-xl p-5 fade-up">
+        <div class="flex items-center gap-3 mb-3"><i class="ph ph-microchip text-3xl text-neon"></i><span class="font-mono font-bold text-white">PC Hardware</span></div>
+        <p class="text-slate-400 text-sm data-i18n" data-i18n="skillPc">Building, upgrading and troubleshooting PCs.</p>
+      </div>
+      <div class="panel panel-hover rounded-xl p-5 fade-up">
+        <div class="flex items-center gap-3 mb-3"><i class="ph ph-git-branch text-3xl text-volt"></i><span class="font-mono font-bold text-white">Open Source</span></div>
+        <p class="text-slate-400 text-sm data-i18n" data-i18n="skillOss">Projects shared on GitHub and Itch.io.</p>
+      </div>
+    </div>
   </section>
 
-  <!-- Hosted Projects Section -->
-  <section class="p-6 sm:p-12 max-w-7xl mx-auto">
-    <h2 id="projects-title" class="text-2xl sm:text-4xl font-bold mb-8 flex items-center gap-3"><i class="ph ph-browser"></i> <span class="label-text">Hosted Projects</span></h2>
-    <div id="project-list" class="grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"></div>
+  <!-- REPOSITORIES -->
+  <section id="repos" class="max-w-7xl mx-auto px-4 sm:px-6 py-20">
+    <div class="flex items-center gap-3 mb-2 font-mono text-cyan-400 text-sm">
+      <span class="text-slate-600">03/</span>
+      <h2 class="text-2xl sm:text-3xl font-mono font-bold">
+        <i class="ph ph-github-logo"></i> <span data-i18n="reposTitle">repositories</span><span class="text-neon">_</span>
+      </h2>
+    </div>
+    <div class="hidden sm:flex flex-col sm:flex-row sm:items-center gap-2 mt-5 mb-1 font-mono text-sm text-slate-500">
+      <span class="text-cyan-500">&gt;</span>
+      <span data-i18n="reposHint" class="text-cyan-300">git clone https://github.com/MysteryTofficial</span>
+      <button onclick="fetchRepos({force:true})" class="ml-2 px-3 py-1 rounded border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 transition text-xs" data-i18n="refresh">↻ refresh</button>
+    </div>
+    <div id="repo-list" class="stagger grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-6"></div>
   </section>
 
+  <!-- HOSTED PROJECTS -->
+  <section id="projects" class="max-w-7xl mx-auto px-4 sm:px-6 py-20">
+    <div class="flex items-center gap-3 mb-2 font-mono text-cyan-400 text-sm">
+      <span class="text-slate-600">04/</span>
+      <h2 class="text-2xl sm:text-3xl font-mono font-bold">
+        <i class="ph ph-globe"></i> <span data-i18n="projectsTitle">hosted projects</span><span class="text-neon">_</span>
+      </h2>
+    </div>
+    <div id="project-list" class="stagger grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-6"></div>
+  </section>
 
-  <!-- Footer -->
-  <footer class="p-6 sm:p-10 text-center text-gray-400 border-t border-gray-800 mt-12 bg-black/40">
-    <p id="footer-text" class="text-xs sm:text-sm">© <span id="year"></span> MysteryT (Péter). All rights reserverd</p>
+  <!-- CONTACT -->
+  <section id="contact" class="max-w-7xl mx-auto px-4 sm:px-6 py-20">
+    <div class="flex items-center gap-3 mb-2 font-mono text-cyan-400 text-sm">
+      <span class="text-slate-600">05/</span>
+      <h2 class="text-2xl sm:text-3xl font-mono font-bold">
+        <i class="ph ph-paper-plane-tilt"></i> <span data-i18n="contactTitle">contact</span><span class="text-neon">_</span>
+      </h2>
+    </div>
+    <div class="panel rounded-xl p-8 mt-6 fade-up grid md:grid-cols-2 gap-8 items-center">
+      <div>
+        <h3 class="text-2xl font-bold text-white" data-i18n="contactHead">Let's build something.</h3>
+        <p class="text-slate-400 mt-3 leading-relaxed" data-i18n="contactText">
+          Whether it's a project idea, a collaboration or just a chat about electronics and PCs — I'm always around.
+        </p>
+        <div class="mt-6 flex flex-wrap gap-4">
+          <a href="https://discord.gg/sFAE5XcPV3" target="_blank" rel="noopener" class="px-5 py-3 rounded-lg font-mono font-bold border border-indigo-400/50 text-indigo-300 hover:bg-indigo-400/10 transition">
+            <i class="ph ph-discord-logo"></i> Discord
+          </a>
+          <a href="https://github.com/MysteryTofficial" target="_blank" rel="noopener" class="px-5 py-3 rounded-lg font-mono font-bold border border-cyan-400/50 text-cyan-300 hover:bg-cyan-400/10 transition">
+            <i class="ph ph-github-logo"></i> GitHub
+          </a>
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-4 font-mono text-3xl">
+        <a href="https://www.youtube.com/@MysteryT_official" target="_blank" rel="noopener" class="panel panel-hover rounded-xl p-5 flex flex-col items-center gap-2 text-white hover:text-red-400" aria-label="YouTube">
+          <i class="ph ph-youtube-logo"></i><span class="text-xs text-slate-500">YT</span>
+        </a>
+        <a href="https://www.tiktok.com/@myst3ryt" target="_blank" rel="noopener" class="panel panel-hover rounded-xl p-5 flex flex-col items-center gap-2 text-white hover:text-pink-400" aria-label="TikTok">
+          <i class="ph ph-tiktok-logo"></i><span class="text-xs text-slate-500">TT</span>
+        </a>
+        <a href="https://myst3ryt.itch.io/" target="_blank" rel="noopener" class="panel panel-hover rounded-xl p-5 flex flex-col items-center gap-2 text-white hover:text-purple-400" aria-label="Itch.io">
+          <i class="ph ph-rocket-launch"></i><span class="text-xs text-slate-500">ITCH</span>
+        </a>
+        <a href="https://steamcommunity.com/profiles/76561199436429551/" target="_blank" rel="noopener" class="panel panel-hover rounded-xl p-5 flex flex-col items-center gap-2 text-white hover:text-blue-400" aria-label="Steam">
+          <i class="ph ph-steam-logo"></i><span class="text-xs text-slate-500">STEAM</span>
+        </a>
+        <a href="https://discord.gg/sFAE5XcPV3" target="_blank" rel="noopener" class="panel panel-hover rounded-xl p-5 flex flex-col items-center gap-2 text-white hover:text-green-400" aria-label="Discord">
+          <i class="ph ph-discord-logo"></i><span class="text-xs text-slate-500">DISC</span>
+        </a>
+        <a href="https://github.com/MysteryTofficial" target="_blank" rel="noopener" class="panel panel-hover rounded-xl p-5 flex flex-col items-center gap-2 text-white hover:text-slate-300" aria-label="GitHub">
+          <i class="ph ph-github-logo"></i><span class="text-xs text-slate-500">GH</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-cyan-500/10 bg-black/40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="font-mono text-slate-500 text-sm text-center md:text-left">
+        <p>© <span id="year"></span> MysteryT (Péter). <span data-i18n="rights">All rights reserved.</span></p>
+        <p class="text-xs mt-1">&lt;<span id="term-role-foot">Developer</span>&gt; <span data-i18n="madeBy">hand-built with C-affection</span></p>
+      </div>
+      <div class="flex flex-wrap justify-center items-center gap-2 font-mono text-xs">
+        <span class="text-slate-600" data-i18n="publicIP">Your public IP: </span>
+        <span id="public-ip-hidden" class="cursor-pointer text-cyan-500 hover:text-cyan-300 transition" onclick="revealPublicIP()" data-i18n="clickToReveal">click to reveal</span>
+        <span id="public-ip" class="hidden text-neon"></span>
+      </div>
+      <div class="flex items-center gap-4 font-mono text-sm">
+        <button onclick="openModal('privacy')" class="text-slate-400 hover:text-cyan-400 transition data-i18n" data-i18n="privacyLink">Privacy</button>
+        <button onclick="openModal('terms')" class="text-slate-400 hover:text-cyan-400 transition data-i18n" data-i18n="termsLink">Terms</button>
+        <button onclick="resetConsent()" class="text-slate-500 hover:text-slate-300 transition text-xs" data-i18n="cookiePrefs">Cookie settings</button>
+      </div>
+    </div>
   </footer>
+
+  <!-- BACK TO TOP -->
+  <button id="back-top" onclick="window.scrollTo({top:0, behavior:'smooth'})" class="hidden fixed bottom-6 right-6 z-40 w-11 h-11 rounded-lg bg-panel border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 transition items-center justify-center" aria-label="Back to top">
+    <i class="ph ph-arrow-up"></i>
+  </button>
+
+  <!-- COOKIE BANNER -->
+  <div id="cookie-banner" class="hidden fixed bottom-0 inset-x-0 z-50">
+    <div class="max-w-3xl mx-4 sm:mx-auto mb-6 panel rounded-xl p-5 shadow-2xl flex flex-col sm:flex-row items-center gap-4 border-cyan-500/25">
+      <i class="ph ph-cookie text-3xl text-amber-400 shrink-0"></i>
+      <p class="text-slate-300 text-sm flex-1" data-i18n="cookieText">
+        This site uses cookies for language and consent preferences. Your public IP is only fetched if you allow it. See our Privacy Policy.
+      </p>
+      <div class="flex gap-2 shrink-0">
+        <button onclick="setConsent('declined')" class="px-4 py-2 rounded-lg border border-slate-600 text-slate-300 hover:bg-slate-700/50 transition text-sm font-mono" data-i18n="cookieDecline">Decline</button>
+        <button onclick="setConsent('accepted')" class="px-4 py-2 rounded-lg bg-neon/15 border border-neon/50 text-neon hover:bg-neon/25 transition text-sm font-mono" data-i18n="cookieAccept">Accept</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRIVACY MODAL -->
+  <div id="modal-privacy" class="hidden fixed inset-0 z-[100] items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('privacy')"></div>
+    <div class="relative panel rounded-xl max-w-2xl w-full max-h-[85vh] flex flex-col border-cyan-500/25 box-glow-cyan">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-cyan-500/15">
+        <h3 class="font-mono font-bold text-cyan-300 text-lg"><i class="ph ph-shield-check"></i> <span class="data-i18n" data-i18n="privacyTitle">Privacy Policy</span></h3>
+        <button onclick="closeModal('privacy')" class="text-slate-400 hover:text-white transition"><i class="ph ph-x text-xl"></i></button>
+      </div>
+      <div class="overflow-y-auto px-6 py-5 text-slate-400 text-sm leading-relaxed">
+        <div id="privacy-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TERMS MODAL -->
+  <div id="modal-terms" class="hidden fixed inset-0 z-[100] items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('terms')"></div>
+    <div class="relative panel rounded-xl max-w-2xl w-full max-h-[85vh] flex flex-col border-cyan-500/25 box-glow-green">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-cyan-500/15">
+        <h3 class="font-mono font-bold text-cyan-300 text-lg"><i class="ph ph-scroll"></i> <span class="data-i18n" data-i18n="termsTitle">Terms of Use</span></h3>
+        <button onclick="closeModal('terms')" class="text-slate-400 hover:text-white transition"><i class="ph ph-x text-xl"></i></button>
+      </div>
+      <div class="overflow-y-auto px-6 py-5 text-slate-400 text-sm leading-relaxed">
+        <div id="terms-content"></div>
+      </div>
+    </div>
+  </div>
 
   <script>
     const username = "MysteryTofficial";
-    let currentLanguage = 'en';
+    let currentLanguage = localStorage.getItem('mysteryt_lang') || 'en';
+    let consent = localStorage.getItem('mysteryt_consent');
+    let reposCount = 0;
+    let projectsCount = 0;
+
+    const roles = {
+      en: ['Developer', 'Creator', 'Innovator', 'Electronics Enthusiast', 'PC Builder'],
+      hu: ['Fejlesztő', 'Létrehozó', 'Innovátor', 'Elektronika-rajongó', 'PC építő']
+    };
+
+    const featuredRepos = [];
+
+    const langColors = {
+      C: '#555555', 'C++': '#f34b7d', 'C#': '#178600', Python: '#3572A5', Pascal: '#E3F171',
+      JavaScript: '#f1e05a', TypeScript: '#3178c6', HTML: '#e34c26', CSS: '#563d7c',
+      GDScript: '#355570', Java: '#b07219', Shell: '#89e051', Batchfile: '#C1F12E',
+      GLSL: '#5686a5', Lua: '#000080', Rust: '#dea584', Go: '#00ADD8', PHP: '#4F5D95',
+      Ruby: '#701516', Makefile: '#427819', 'Objective-C': '#438eff', Dart: '#00B4AB',
+      Kotlin: '#A97BFF', Swift: '#F05138', PowerShell: '#012456', CMake: '#DA3434',
+      Assembly: '#6E4C13', q: '#0040cd'
+    };
+
+    const REPO_CACHE_KEY = 'mysteryt_repos_v1';
+    const REPO_CACHE_TTL = 30 * 60 * 1000;
 
     const translations = {
       en: {
-        headerSubtitle: "Developer • Creator • Innovator",
-        aboutTitle: "About MysteryT",
-        aboutText: "<strong>MysteryT</strong> is the online alias of <strong>Péter</strong> who is a <strong id='kor'></strong> year old, passionate developer and creative innovator. He works with <strong>C, Lazarus, Python, GDevelop, Godot, HTML, CSS, and JavaScript</strong> to build interactive projects shared on GitHub and Itch.io.",
-        reposTitle: "Repositories",
-        projectsTitle: "Hosted Projects",
-        publicIP: "Your Public IP: ",
-        clickToReveal: "Click to reveal",
-        download: "Download",
-        view: "View",
-        hostedProject: "Hosted GitHub Project",
-        paidLabel: "$",
+        htmlTitle: 'MysteryT — Engineer. Creator. Innovator.',
+        awayTitle: 'Hey! Come back · MysteryT',
+        navAbout: '<About>', navSkills: '<Skills>', navRepos: '<Projects>', navContact: '<Contact>',
+        sysOnline: 'SYSTEM ONLINE',
+        heroText: 'I design, build and tinker with software, electronics and computers — turning ideas into interactive engineering.',
+        ctaProjects: 'view projects', ctaContact: 'get in touch',
+        loc: 'Hungary', spec: 'PC & electronics', open: 'open to collaboration',
+        termRole: 'Role detected', termLang: 'Language stack', termHw: 'Hardware stack', termStatus: 'System ready',
+        aboutTitle: 'about', aboutText: '<strong class="text-cyan-300">MysteryT</strong> is the online alias of <strong class="text-white">Péter</strong>, a <strong id="kor" class="text-neon"></strong>-year-old software developer and creative innovator. He works with <strong class="text-cyan-300">C, Lazarus, Python, GDevelop, Godot, HTML, CSS and JavaScript</strong> to build interactive projects shared on <strong class="text-white">GitHub</strong> and <strong class="text-white">Itch.io</strong>. When he is not coding, he is tinkering with <strong class="text-cyan-300">electronics, microcontrollers and PC hardware</strong>.',
+        statAge: 'years old', statTools: 'technologies', statProjects: 'public repos', statSocials: 'social platforms',
+        skillsTitle: 'skills',
+        skillC: 'Low-level, system software and tooling.',
+        skillPascal: 'Desktop GUI applications that just work.',
+        skillPython: 'Home automation, bots and automation scripts.',
+        skillGame: '2D game development and interactive demos.',
+        skillWeb: 'Modern, responsive and themeable web.',
+        skillElec: 'Circuit design, microcontrollers, soldering.',
+        skillPc: 'Building, upgrading and troubleshooting PCs.',
+        skillOss: 'Projects shared on GitHub and Itch.io.',
+        reposTitle: 'repositories', reposHint: 'git clone https://github.com/MysteryTofficial', refresh: '↻ refresh',
+        projectsTitle: 'hosted projects',
+        contactTitle: 'contact', contactHead: "Let's build something.", contactText: "Whether it's a project idea, a collaboration or just a chat about electronics and PCs — I'm always around.",
+        rights: 'All rights reserved.',
+        madeBy: 'hand-built with C-affection',
+        publicIP: 'Your public IP:', clickToReveal: 'click to reveal',
+        privacyLink: 'Privacy', termsLink: 'Terms', cookiePrefs: 'Cookie settings',
+        cookieText: 'This site uses cookies to remember your language and consent choices. Your public IP is only fetched if you allow it. See our Privacy Policy.',
+        cookieAccept: 'Accept', cookieDecline: 'Decline',
+        privacyTitle: 'Privacy Policy', termsTitle: 'Terms of Use',
+        download: 'Download', view: 'View', hostedProject: 'Hosted GitHub project', noDescription: 'No description',
+        stars: 'stars', forks: 'forks', updated: 'updated', featured: 'featured',
+        loading: 'Fetching repositories...', error: 'Failed to load repositories.',
       },
       hu: {
-        headerSubtitle: "Fejlesztő • Létrehozó • Innovátor",
-        aboutTitle: "MysteryT-ről",
-        aboutText: "<strong>MysteryT</strong> Péter online álneve, aki egy <strong id='kor'></strong> éves szenvedélyes fejlesztő és kreatív innovátor. <strong>C, Lazarus, Python, GDevelop, Godot, HTML, CSS és JavaScript</strong> nyelveket használ az interaktív projektek létrehozásához, amelyeket a GitHubon és az Itch.io-n oszt meg.",
-        reposTitle: "Projektek",
-        projectsTitle: "Hosztolt Projektek",
-        publicIP: "A Te Nyilvános IP-d: ",
-        clickToReveal: "Kattints a megjelenítéshez",
-        download: "Letöltés",
-        view: "Megtekintés",
-        hostedProject: "Hosztolt GitHub Projekt",
-        paidLabel: "$",
+        htmlTitle: 'MysteryT — Mérnök. Létrehozó. Innovátor.',
+        awayTitle: 'Hé! Gyere vissza · MysteryT',
+        navAbout: '<Rólam>', navSkills: '<Készségek>', navRepos: '<Projektek>', navContact: '<Kapcsolat>',
+        sysOnline: 'RENDSZER ONLINE',
+        heroText: 'Szoftvereket, elektronikát és számítógépeket tervezek, építek és piszkálok — az ötleteket interaktív mérnöki alkotásokká alakítva.',
+        ctaProjects: 'projektek', ctaContact: 'kapcsolat',
+        loc: 'Magyarország', spec: 'PC és elektronika', open: 'nyitott együttműködésre',
+        termRole: 'Szerep', termLang: 'Nyelvi stack', termHw: 'Hardver stack', termStatus: 'Rendszer kész',
+        aboutTitle: 'rólam', aboutText: '<strong class="text-cyan-300">MysteryT</strong> Péter online álneve, aki egy <strong id="kor" class="text-neon"></strong> éves szoftverfejlesztő és kreatív innovátor. <strong class="text-cyan-300">C, Lazarus, Python, GDevelop, Godot, HTML, CSS és JavaScript</strong> nyelvekkel dolgozik, hogy interaktív projekteket hozzon létre, amelyeket a <strong class="text-white">GitHubon</strong> és az <strong class="text-white">Itch.io-n</strong> oszt meg. Amikor nem kódol, <strong class="text-cyan-300">elektronikával, mikrovezérlőkkel és PC-hardverrel</strong> bíbelődik.',
+        statAge: 'éves', statTools: 'technológia', statProjects: 'nyilvános repo', statSocials: 'közösségi platform',
+        skillsTitle: 'készségek',
+        skillC: 'Alacsony szintű rendszerszoftver és eszközök.',
+        skillPascal: 'Asztali GUI alkalmazások, amelyek működnek.',
+        skillPython: 'Otthonautomatizálás, botok és szkriptek.',
+        skillGame: '2D játékfejlesztés és interaktív demók.',
+        skillWeb: 'Modern, reszponzív és testreszabható web.',
+        skillElec: 'Áramkörtervezés, mikrovezérlők, forrasztás.',
+        skillPc: 'PC építés, bővítés és hibakeresés.',
+        skillOss: 'Projektek GitHubon és Itch.io-n.',
+        reposTitle: 'projektek', reposHint: 'git clone https://github.com/MysteryTofficial', refresh: '↻ frissítés',
+        projectsTitle: 'hosztolt projektek',
+        contactTitle: 'kapcsolat', contactHead: 'Építsünk valamit.', contactText: 'Akár projektötlet, együttműködés, vagy csak egy beszélgetés elektronikáról és PC-kről — mindig elérhető vagyok.',
+        rights: 'Minden jog fenntartva.',
+        madeBy: 'kézzel, C-szeretettel',
+        publicIP: 'A te nyilvános IP-d:', clickToReveal: 'kattints a megjelenítéshez',
+        privacyLink: 'Adatvédelem', termsLink: 'Feltételek', cookiePrefs: 'Süti beállítások',
+        cookieText: 'Ez az oldal sütiket használ a nyelv és a hozzájárulás megjegyzéséhez. A nyilvános IP-d csak akkor kerül lekérésre, ha engedélyezed. Lásd Adatvédelmi irányelveinket.',
+        cookieAccept: 'Elfogadom', cookieDecline: 'Elutasítom',
+        privacyTitle: 'Adatvédelmi Irányelvek', termsTitle: 'Felhasználási Feltételek',
+        download: 'Letöltés', view: 'Megtekintés', hostedProject: 'Hosztolt GitHub projekt', noDescription: 'Nincs leírás',
+        stars: 'csillag', forks: 'fork', updated: 'frissítve', featured: 'kiemelt',
+        loading: 'Projektek betöltése...', error: 'A projektek betöltése sikertelen.',
       }
     };
 
+    const legal = {
+      en: {
+        privacy: [
+          { h: '1. Who operates this site', p: 'This website is operated by MysteryT (Péter) as a personal portfolio. All references to "we", "us" or "our" refer to the site owner.' },
+          { h: '2. Data we collect', p: 'This site is hosted as a static page. By default it does not store personal data on our servers. The dynamic sections load publicly available information from the GitHub API (public repository names and descriptions).' },
+          { h: '3. Public IP address', p: 'The footer offers an optional "reveal public IP" feature. Your public IP address is fetched from a third-party service (ipify) only when you click the button, and is displayed only in your own browser. It is not logged or stored by us.' },
+          { h: '4. Cookies', p: 'We use a small, local cookie (localStorage) to remember: (a) your chosen language, and (b) your cookie consent choice. No tracking or advertising cookies are used. You can clear these at any time via "Cookie settings" in the footer or by clearing your browser data.' },
+          { h: '5. Third-party services', p: 'The site links to external platforms: GitHub, YouTube, TikTok, Itch.io, Steam and Discord. Their pages have their own privacy policies. The GitHub REST API is used to list public repositories; no account data is accessed.' },
+          { h: '6. Your rights (GDPR)', p: 'You have the right to access, correct or delete any personal data we hold — which in practice is none, since we do not operate user accounts or collect personal information. You may also object to or withdraw any consent at any time.' },
+          { h: '7. Children', p: 'This site is a portfolio and is not directed at children under 16. We do not knowingly collect data from children.' },
+          { h: '8. Changes', p: 'We may update this policy from time to time. Changes become effective when published on this page. Last updated: September 2026.' },
+          { h: '9. Contact', p: 'For any privacy-related questions, reach out via the contact channels listed on this page.' },
+        ],
+        terms: [
+          { h: '1. Acceptance', p: 'By accessing this website you agree to these Terms of Use. If you do not agree, please stop using the site.' },
+          { h: '2. Copyright and intellectual property', p: 'All content on this site — text, design, code and branding — is the property of the site owner unless stated otherwise. Projects listed on GitHub follow their respective licenses.' },
+          { h: '3. Use of content', p: 'You may view and share this content for personal, non-commercial purposes with attribution. You may not reproduce the site design or branding for commercial purposes without permission.' },
+          { h: '4. External links', p: 'This site links to external platforms (GitHub, YouTube, TikTok, Itch.io, Steam, Discord). We are not responsible for the content or practices of those third-party sites.' },
+          { h: '5. Accuracy', p: 'Content, portfolio items and status information are provided "as is" without warranty of any kind. We make every effort to keep information accurate but do not guarantee its completeness.' },
+          { h: '6. Limitation of liability', p: 'To the maximum extent permitted by law, the site owner is not liable for any direct or indirect damages arising from the use of this website or its linked content.' },
+          { h: '7. Governing law', p: 'These terms are governed by the laws of Hungary. Disputes shall be subject to the jurisdiction of the competent Hungarian courts.' },
+          { h: '8. Contact', p: 'Questions about these terms can be sent through the contact channels listed on this page.' },
+        ],
+      },
+      hu: {
+        privacy: [
+          { h: '1. Ki üzemelteti ezt az oldalt', p: 'Ezt a weboldalt MysteryT (Péter) üzemelteti személyes portfólióként. A "mi" kifejezés az oldal tulajdonosára utal.' },
+          { h: '2. Milyen adatokat gyűjtünk', p: 'Ez az oldal statikus oldalként van üzemeltetve. Alapértelmezetten nem tárol személyes adatokat kiszolgálónkon. A dinamikus részek nyilvánosan elérhető GitHub API adatokat (nyilvános repo nevek és leírások) töltik be.' },
+          { h: '3. Nyilvános IP-cím', p: 'A lábléc opcionális "IP megjelenítése" funkciót kínál. A nyilvános IP-címed csak gomb kattintásra kerül lekérésre egy harmadik féltől (ipify), és csak a saját böngésződben jelenik meg. Nem naplózzuk és nem tároljuk.' },
+          { h: '4. Sütik', p: 'Egy kis, helyi cookie-t (localStorage) használunk, hogy megjegyezzük: (a) a választott nyelvedet és (b) a süti-hozzájárulásodat. Nem használunk követő vagy reklám sütiket. Ezeket bármikor törölheted a lábléc "Süti beállítások" menüjében, vagy a böngésző adatainak törlésével.' },
+          { h: '5. Harmadik féltől származó szolgáltatások', p: 'Az oldal külső platformokra mutató linkeket tartalmaz: GitHub, YouTube, TikTok, Itch.io, Steam és Discord. Ezeknek az oldalaknak saját adatvédelmi irányelveik vannak. A GitHub REST API-t nyilvános repók listázásához használjuk; fiókadatokat nem érünk el.' },
+          { h: '6. A te jogaid (GDPR)', p: 'Jogodban áll hozzáférni, helyesbíteni vagy törölni az általunk tárolt személyes adatokat — ami gyakorlatilag semmi, mivel nem működtetünk felhasználói fiókokat, és nem gyűjtünk személyes adatokat. A hozzájárulásodat bármikor visszavonhatod.' },
+          { h: '7. Gyermekek', p: 'Ez az oldal portfólió, és nem 16 éven aluli gyermekeknek szól. Tudatosan nem gyűjtünk tőlük adatokat.' },
+          { h: '8. Változások', p: 'Ezt az irányelvet időről időre frissíthetjük. A változások az oldalon történő közzététellel lépnek életbe. Utolsó frissítés: 2026. szeptember.' },
+          { h: '9. Kapcsolat', p: 'Adatvédelmi kérdések esetén az oldalon található kapcsolati csatornákon érhetsz el.' },
+        ],
+        terms: [
+          { h: '1. Elfogadás', p: 'A weboldal elérésével elfogadod ezeket a Felhasználási Feltételeket. Ha nem értesz egyet, kérjük, ne használd az oldalt.' },
+          { h: '2. Szerzői jog és szellemi tulajdon', p: 'Az oldal minden tartalma — szöveg, dizájn, kód és márkajelzés — az oldal tulajdonosának tulajdona, ha másként nem jelezzük. A GitHubon közzétett projektek a saját licencket követik.' },
+          { h: '3. Tartalom használata', p: 'A tartalmat megtekintheted és megoszthatod személyes, nem kereskedelmi céllal, a forrás megjelölésével. Az oldal dizájnját vagy márkajelzését kereskedelmi céllal engedély nélkül nem reprodukálhatod.' },
+          { h: '4. Külső linkek', p: 'Ez az oldal külső platformokra mutató linkeket tartalmaz (GitHub, YouTube, TikTok, Itch.io, Steam, Discord). Nem vállalunk felelősséget azok tartalmáért vagy gyakorlataiért.' },
+          { h: '5. Pontosság', p: 'A tartalom, portfólió-elemek és státuszadatok "ahogy vannak", bármilyen garancia nélkül állnak rendelkezésre. Mindent megteszünk a pontosságért, de nem garantáljuk a teljességet.' },
+          { h: '6. Felelősség korlátozása', p: 'A jog által megengedett legnagyobb mértékben az oldal tulajdonosa nem felelős semmilyen közvetlen vagy közvetett kárért, amely a weboldal vagy a linkelt tartalom használatából származik.' },
+          { h: '7. Irányadó jog', p: 'Ezeket a feltételeket Magyarország joga szabályozza. A viták az illetékes magyar bíróságok joghatósága alá tartoznak.' },
+          { h: '8. Kapcsolat', p: 'A feltételekkel kapcsolatos kérdéseket az oldalon található kapcsolati csatornákon küldheted.' },
+        ],
+      }
+    };
+
+    const t = () => translations[currentLanguage];
+
+    function applyStaticTranslation() {
+      document.documentElement.lang = currentLanguage;
+      document.title = t().htmlTitle;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (translations[currentLanguage][key] !== undefined) el.innerHTML = translations[currentLanguage][key];
+      });
+      renderLegal();
+      document.getElementById('about-text').innerHTML = t().aboutText;
+      renderRole();
+    }
+
+    function renderLegal() {
+      const build = (items) => items.map((s, i) =>
+        `<div class="mb-4"><h4 class="font-mono font-bold text-cyan-300 mb-1">${s.h}</h4><p>${s.p}</p></div>`
+      ).join('');
+      document.getElementById('privacy-content').innerHTML = build(legal[currentLanguage].privacy);
+      document.getElementById('terms-content').innerHTML = build(legal[currentLanguage].terms);
+    }
+
+    function renderRole() {
+      const r = roles[currentLanguage];
+      const el = () => Math.floor(Math.random() * r.length);
+      document.getElementById('term-role').textContent = r[el()];
+      document.getElementById('term-role-foot').textContent = r[1] || r[0];
+    }
+
     function setLanguage(lang) {
-  currentLanguage = lang;
-  const t = translations[lang];
+      currentLanguage = lang;
+      localStorage.setItem('mysteryt_lang', lang);
+      applyStaticTranslation();
+      document.getElementById('btn-en').className = 'px-3 py-1 rounded-md transition ' + (lang === 'en' ? 'bg-cyan-500/20 text-cyan-300' : 'text-slate-400 hover:bg-cyan-500/10');
+      document.getElementById('btn-hu').className = 'px-3 py-1 rounded-md transition ' + (lang === 'hu' ? 'bg-cyan-500/20 text-cyan-300' : 'text-slate-400 hover:bg-cyan-500/10');
+      recalcStats();
+      updateDynamicContent();
+      updateCounters();
+      typewriter();
+    }
 
-  // Section subtitles (these overwrite the span inside headings, so icons stay)
-  document.querySelector('#about-title .label-text').innerHTML = t.aboutTitle;
-  document.querySelector('#repos-title .label-text').innerHTML = t.reposTitle;
-  document.querySelector('#projects-title .label-text').innerHTML = t.projectsTitle;
+    function animateCount(el, target, suffix = '') {
+      if (!el) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { el.textContent = target + suffix; return; }
+      const dur = 1100, start = performance.now();
+      (function step(now) {
+        const p = Math.min((now - start) / dur, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * eased) + suffix;
+        if (p < 1) requestAnimationFrame(step);
+      })(performance.now());
+    }
 
-  // Normal replacements (leave these as they were)
-  document.getElementById('header-subtitle').innerHTML = t.headerSubtitle;
-  document.getElementById('about-text').innerHTML = t.aboutText;
-  document.getElementById('public-ip-hidden').innerHTML = t.clickToReveal;
-  document.querySelector('.public-ip-label').innerHTML = t.publicIP;
-  
-  // Update dynamically created content (repos, projects, itch.io)
-  updateDynamicContent();
-}
+    function initCounters() {
+      document.querySelectorAll('[data-count]').forEach(el => {
+        const v = parseInt(el.dataset.count, 10);
+        if (!isNaN(v)) animateCount(el, v, el.dataset.suffix || '');
+      });
+    }
 
-    function createCard({title, description, link, color, icon, extraButtonClass = "", extraButtonText = "", extraButtonHTML = "", viewLink = "", viewButtonText = ""}) {
-      const outer = document.createElement("div");
-      outer.className = "tilt-card";
-      const card = document.createElement("div");
-      card.className = `tilt-inner group p-6 rounded-3xl shadow-xl bg-gradient-to-br ${color} hover:scale-[1.04] hover:shadow-2xl transition transform flex flex-col justify-between`;
-      
-      // Add view button if viewLink is provided
-      const viewButton = viewLink ? 
-        `<a href="${viewLink}" target="_blank" class="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition text-sm glow-btn view-btn">${viewButtonText}</a>` : '';
-      
+    function updateCounters() {
+      animateCount(document.getElementById('stat-repos'), reposCount);
+    }
+
+    function recalcStats() {
+      const years = new Date().getFullYear() - 2008;
+      animateCount(document.getElementById('stat-age'), years);
+      const kor = document.getElementById('kor');
+      if (kor) kor.textContent = years;
+    }
+
+    // ---- Card rendering ----
+    function langDot(language) {
+      if (!language) return '';
+      const color = langColors[language] || '#8b949e';
+      return `<span class="lang-dot align-middle" style="background:${color}"></span> ${language}`;
+    }
+
+    function timeAgo(dateStr) {
+      const locale = currentLanguage === 'hu' ? 'hu' : 'en';
+      const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+      const diff = Date.now() - new Date(dateStr).getTime();
+      const mins = Math.round(diff / 60000);
+      if (mins < 60) return rtf.format(-mins, 'minute');
+      const hrs = Math.round(mins / 60);
+      if (hrs < 24) return rtf.format(-hrs, 'hour');
+      const days = Math.round(hrs / 24);
+      if (days < 31) return rtf.format(-days, 'day');
+      const months = Math.round(days / 30);
+      if (months < 12) return rtf.format(-months, 'month');
+      return rtf.format(-Math.round(months / 12), 'year');
+    }
+
+    function repoMetaHTML(repo) {
+      const parts = [];
+      if (repo.language) parts.push(`<span class="flex items-center gap-1.5">${langDot(repo.language)}</span>`);
+      if (repo.stargazers_count > 0) parts.push(`<span class="flex items-center gap-1"><i class="ph ph-star"></i> ${repo.stargazers_count}</span>`);
+      if (repo.forks_count > 0) parts.push(`<span class="flex items-center gap-1"><i class="ph ph-git-fork"></i> ${repo.forks_count}</span>`);
+      if (repo.pushed_at) parts.push(`<span class="flex items-center gap-1"><i class="ph ph-clock"></i> ${timeAgo(repo.pushed_at)}</span>`);
+      if (!parts.length) return '';
+      return `<div class="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-slate-500 border-t border-cyan-500/10 pt-3">${parts.join('')}</div>`;
+    }
+
+    function createCard({ title, description, link, icon, defaultColor, primaryClass = 'download-btn', viewLink, langKey, meta = '', topics = [], featured = false }) {
+      const card = document.createElement('div');
+      card.className = `panel panel-hover rounded-xl overflow-hidden flex flex-col ${langKey} fade-up`;
+      const topicHTML = topics.length
+        ? `<div class="flex flex-wrap gap-1 mt-3">${topics.slice(0, 4).map(tp => `<span class="px-2 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-[10px] font-mono">${tp}</span>`).join('')}</div>`
+        : '';
+      const badge = featured
+        ? `<span class="px-2 py-0.5 rounded bg-amber-400/15 border border-amber-400/40 text-amber-300 text-[10px] font-mono"><i class="ph ph-star-fill"></i> ${t().featured}</span>`
+        : `<div class="flex gap-1"><span class="w-2 h-2 rounded-full bg-slate-600"></span><span class="w-2 h-2 rounded-full bg-slate-600"></span><span class="w-2 h-2 rounded-full bg-slate-600"></span></div>`;
       card.innerHTML = `
-        <div>
-          <div class="flex items-center gap-3 mb-4">
-            <i class="ph ${icon} text-3xl"></i>
-            <h3 class="text-xl sm:text-2xl font-bold">${title}</h3>
+        <div class="flex items-center justify-between px-5 pt-4">
+          <div class="w-10 h-10 rounded-lg ${defaultColor} flex items-center justify-center text-white">
+            <i class="ph ${icon} text-2xl"></i>
           </div>
-          <p class="text-gray-200 text-sm leading-relaxed mb-5 line-clamp-3">${description}</p>
+          ${badge}
         </div>
-        <div class="flex gap-3 mt-auto flex-wrap">
-          <a href="${link}" target="_blank" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 transition text-sm glow-btn ${extraButtonClass}">${extraButtonText}</a>
-          ${viewButton}
-          ${extraButtonHTML}
+        <div class="px-5 py-4 flex-1">
+          <h3 class="font-mono font-bold text-white mb-2 break-words">${title}</h3>
+          <p class="text-slate-400 text-sm leading-relaxed line-clamp-3 project-desc">${description || t().noDescription}</p>
+          ${topicHTML}
+        </div>
+        ${meta ? `<div class="px-5">${meta}</div>` : ''}
+        <div class="px-5 py-4 flex gap-2 flex-wrap">
+          <a href="${link}" target="_blank" rel="noopener" class="px-4 py-2 rounded-lg bg-cyan-500/10 border border-cyan-400/40 text-cyan-300 hover:bg-cyan-500/20 transition text-xs font-mono ${primaryClass}">${primaryClass === 'view-btn' ? t().view : t().download}</a>
+          ${viewLink ? `<a href="${viewLink}" target="_blank" rel="noopener" class="px-4 py-2 rounded-lg bg-slate-700/50 border border-slate-500/40 text-slate-200 hover:bg-slate-600/50 transition text-xs font-mono view-btn">${t().view}</a>` : ''}
         </div>
       `;
-      outer.appendChild(card);
+      return card;
+    }
 
-      outer.addEventListener('mousemove', e => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
-        card.style.transform = `rotateY(${x * 0.1}deg) rotateX(${-y * 0.1}deg)`;
+    function loadRepoCache() {
+      try {
+        const raw = sessionStorage.getItem(REPO_CACHE_KEY);
+        if (!raw) return null;
+        const c = JSON.parse(raw);
+        if (!c || Date.now() - c.ts > REPO_CACHE_TTL) return null;
+        return c.repos;
+      } catch (e) { return null; }
+    }
+
+    function saveRepoCache(repos) {
+      try { sessionStorage.setItem(REPO_CACHE_KEY, JSON.stringify({ ts: Date.now(), repos })); } catch (e) {}
+    }
+
+    let repoData = null;
+
+    function renderRepos(repos, { animate = true } = {}) {
+      const repoList = document.getElementById('repo-list');
+      const projectList = document.getElementById('project-list');
+      repoData = repos;
+      reposCount = repos.length;
+      updateCounters();
+
+      const rank = (r) => (featuredRepos.includes(r.name) ? 2 : (r.has_pages ? 1 : 0));
+      repos.sort((a, b) => rank(b) - rank(a) || (b.stargazers_count - a.stargazers_count) || new Date(b.pushed_at) - new Date(a.pushed_at));
+
+      repoList.innerHTML = '';
+      projectList.innerHTML = '';
+      let hosted = 0;
+
+      repos.forEach(repo => {
+        const isFeatured = featuredRepos.includes(repo.name);
+        const card = createCard({
+          title: repo.name,
+          description: repo.description,
+          link: `https://github.com/${username}/${repo.name}/archive/refs/heads/${repo.default_branch || 'main'}.zip`,
+          icon: repo.fork ? 'ph-git-fork' : 'ph-folder',
+          defaultColor: 'bg-cyan-500/15 text-cyan-400',
+          viewLink: repo.html_url,
+          meta: repoMetaHTML(repo),
+          topics: repo.topics,
+          featured: isFeatured,
+          langKey: 'repo-card',
+        });
+        repoList.appendChild(card);
+
+        if (repo.has_pages) {
+          hosted++;
+          const projectCard = createCard({
+            title: repo.name,
+            description: t().hostedProject,
+            link: `https://${username}.github.io/${repo.name}/`,
+            icon: 'ph-browser',
+            defaultColor: 'bg-neon/15 text-neon',
+            primaryClass: 'view-btn',
+            featured: isFeatured,
+            langKey: 'project-card',
+          });
+          projectList.appendChild(projectCard);
+        }
       });
-      outer.addEventListener('mouseleave', () => { card.style.transform = 'rotateY(0deg) rotateX(0deg)'; });
-      return outer;
+
+      if (hosted === 0) {
+        projectList.innerHTML = `<div class="col-span-full font-mono text-slate-600 text-sm">// no hosted projects found</div>`;
+      }
+
+      if (animate) {
+        observeFades();
+      } else {
+        document.querySelectorAll('#repo-list .fade-up, #project-list .fade-up').forEach(el => {
+          el.style.transitionDelay = '0ms';
+          el.classList.add('in-view');
+        });
+      }
+    }
+
+    async function fetchRepos({ force = false } = {}) {
+      const repoList = document.getElementById('repo-list');
+      const projectList = document.getElementById('project-list');
+      if (reposCount > 0 && !force) return;
+
+      repoList.innerHTML = `<div class="col-span-full font-mono text-slate-500 text-sm">${t().loading}</div>`;
+      projectList.innerHTML = '';
+
+      try {
+        let repos = force ? null : loadRepoCache();
+        if (!repos) {
+          const res = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=100`);
+          if (!res.ok) throw new Error('API error');
+          const data = await res.json();
+          repos = data.map(r => ({
+            name: r.name, description: r.description, html_url: r.html_url, has_pages: r.has_pages,
+            fork: r.fork, language: r.language, stargazers_count: r.stargazers_count,
+            forks_count: r.forks_count, pushed_at: r.pushed_at, topics: r.topics || [],
+            default_branch: r.default_branch
+          }));
+          saveRepoCache(repos);
+        }
+        renderRepos(repos);
+      } catch (err) {
+        repoList.innerHTML = `<div class="col-span-full font-mono text-red-400 text-sm">// ${t().error} (${err.message})</div>`;
+      }
     }
 
     function updateDynamicContent() {
-      const t = translations[currentLanguage];
-      
-      // Update repo cards
-      document.querySelectorAll(".repo-card .download-btn").forEach(btn => {
-        btn.textContent = t.download;
-      });
-      
-      document.querySelectorAll(".repo-card .view-btn").forEach(btn => {
-        btn.textContent = t.view;
-      });
-      
-      // Update project cards
-      document.querySelectorAll(".project-card .hosted-label").forEach(el => {
-        el.textContent = t.hostedProject;
-      });
+      if (repoData) renderRepos(repoData, { animate: false });
     }
 
-    async function fetchRepos() {
-      const res = await fetch(`https://api.github.com/users/${username}/repos?sort=updated`);
-      const repos = await res.json();
-      const repoList = document.getElementById("repo-list");
-      const projectList = document.getElementById("project-list");
-      
-      // Clear existing content
-      repoList.innerHTML = "";
-      projectList.innerHTML = "";
-      
-      const t = translations[currentLanguage];
-      
-      repos.forEach(repo => {
-        const card = createCard({ 
-          title: repo.name, 
-          description: repo.description || "No description", 
-          link: repo.html_url, 
-          color: "from-gray-800 to-gray-700", 
-          icon: "ph-folder",
-          extraButtonClass: "download-btn",
-          extraButtonText: t.download,
-          viewLink: repo.html_url,
-          viewButtonText: t.view
-        });
-        card.classList.add("repo-card");
-        repoList.appendChild(card);
-        
-        if (repo.has_pages) { 
-          const projectCard = createCard({ 
-            title: repo.name, 
-            description: t.hostedProject, 
-            link: `https://${username}.github.io/${repo.name}/`, 
-            color: "from-green-700 to-green-600", 
-            icon: "ph-browser",
-            extraButtonClass: "hosted-label",
-            extraButtonText: t.hostedProject
-          });
-          projectCard.classList.add("project-card");
-          projectList.appendChild(projectCard); 
-        }
-      });
-    }
-
+    // ---- Public IP (consent-gated) ----
     async function getPublicIP() {
+      if (consent !== 'accepted') return;
       try {
-        const res = await fetch("https://api.ipify.org?format=json");
+        const res = await fetch('https://api.ipify.org?format=json');
         const data = await res.json();
-        document.getElementById("public-ip").textContent = data.ip;
+        document.getElementById('public-ip').textContent = data.ip;
       } catch (err) {
-        document.getElementById("public-ip").textContent = "Error fetching IP";
+        document.getElementById('public-ip').textContent = '--';
       }
     }
 
     function revealPublicIP() {
-      document.getElementById("public-ip-hidden").classList.add("hidden");
-      document.getElementById("public-ip").classList.remove("hidden");
+      if (consent !== 'accepted') {
+        document.getElementById('cookie-banner').classList.remove('hidden');
+        document.getElementById('cookie-banner').classList.add('flex');
+        return;
+      }
+      document.getElementById('public-ip-hidden').classList.add('hidden');
+      document.getElementById('public-ip').classList.remove('hidden');
     }
 
-    function calculateAgeYear(birthYear) {
-    const currentYear = new Date().getFullYear();
-    return currentYear - birthYear;
+    // ---- Cookie consent ----
+    function setConsent(value) {
+      consent = value;
+      localStorage.setItem('mysteryt_consent', value);
+      document.getElementById('cookie-banner').classList.add('hidden');
+      document.getElementById('cookie-banner').classList.remove('flex');
+      getPublicIP();
+      fetchRepos();
     }
-    
-    function updateAge() {
-    const myAge = calculateAgeYear(2008);
-    const korEl = document.getElementById("kor");
-    if(korEl) korEl.textContent = myAge;
+
+    function resetConsent() {
+      localStorage.removeItem('mysteryt_consent');
+      consent = null;
+      openCookieBanner();
     }
-    
-    // Initialize the page
-    document.getElementById("year").textContent = new Date().getFullYear();
-    const myAge = calculateAgeYear(2008);
-    setLanguage('en'); // Set default language
-    updateAge();
+
+    function openCookieBanner() {
+      if (consent) return;
+      document.getElementById('cookie-banner').classList.remove('hidden');
+      document.getElementById('cookie-banner').classList.add('flex');
+    }
+
+    // ---- Modals ----
+    function openModal(name) {
+      document.getElementById(`modal-${name}`).classList.remove('hidden');
+      document.getElementById(`modal-${name}`).classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal(name) {
+      document.getElementById(`modal-${name}`).classList.add('hidden');
+      document.getElementById(`modal-${name}`).classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal('privacy'); closeModal('terms'); } });
+
+    // ---- Typewriter ----
+    let typewriterSeq = 0;
+    function typewriter() {
+      const seq = ++typewriterSeq;
+      const el = document.getElementById('typewriter');
+      const words = roles[currentLanguage];
+      let word = 0, i = 0, deleting = false;
+      (function tick() {
+        if (seq !== typewriterSeq) return;
+        const w = words[word];
+        el.textContent = w.slice(0, i);
+        if (!deleting) {
+          if (i < w.length) { i++; setTimeout(tick, 90); }
+          else { deleting = true; setTimeout(tick, 1800); }
+        } else {
+          if (i > 0) { i--; setTimeout(tick, 40); }
+          else { deleting = false; word = (word + 1) % words.length; setTimeout(tick, 300); }
+        }
+      })();
+    }
+
+    // ---- Tab-switch easter egg ----
+    let titleTimer = null;
+    let titleToggled = false;
+    function titleBlink() {
+      if (!document.hidden) { document.title = t().htmlTitle; return; }
+      titleToggled = !titleToggled;
+      document.title = titleToggled ? t().awayTitle : t().htmlTitle;
+      titleTimer = setTimeout(titleBlink, 900);
+    }
+    document.addEventListener('visibilitychange', () => {
+      clearTimeout(titleTimer);
+      if (document.hidden) { titleToggled = false; titleBlink(); }
+      else document.title = t().htmlTitle;
+    });
+
+    // ---- Scroll reveal ----
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in-view'); observer.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    function observeFades() {
+      document.querySelectorAll('.fade-up').forEach(el => {
+        const parent = el.parentElement;
+        if (parent && parent.classList.contains('stagger')) {
+          const idx = Array.prototype.indexOf.call(parent.children, el);
+          el.style.transitionDelay = Math.min(idx * 70, 490) + 'ms';
+        }
+        observer.observe(el);
+      });
+    }
+
+    // ---- Scroll progress + spotlight + active nav ----
+    const progressBar = document.getElementById('scroll-progress');
+    const spotlight = document.getElementById('spotlight');
+    const sections = ['about', 'skills', 'repos', 'projects', 'contact'];
+    function setActiveNav(id) {
+      if (id === 'projects') id = 'repos';
+      document.querySelectorAll('.nav-link').forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + id));
+    }
+    const spy = new IntersectionObserver(entries => {
+      entries.forEach(entry => { if (entry.isIntersecting) setActiveNav(entry.target.id); });
+    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+    sections.forEach(id => { const s = document.getElementById(id); if (s) spy.observe(s); });
+
+    window.addEventListener('scroll', () => {
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - doc.clientHeight;
+      progressBar.style.width = (max > 0 ? (doc.scrollTop / max) * 100 : 0) + '%';
+      const b = document.getElementById('back-top');
+      if (window.scrollY > 600) { b.classList.remove('hidden'); b.classList.add('flex'); }
+      else { b.classList.add('hidden'); b.classList.remove('flex'); }
+    }, { passive: true });
+
+    window.addEventListener('mousemove', e => {
+      spotlight.style.setProperty('--mx', e.clientX + 'px');
+      spotlight.style.setProperty('--my', e.clientY + 'px');
+    }, { passive: true });
+
+    // ---- Mobile menu ----
+    document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+      const m = document.getElementById('mobile-menu');
+      m.classList.toggle('hidden');
+      document.getElementById('mobile-menu-btn').querySelector('i').className = m.classList.contains('hidden') ? 'ph ph-list' : 'ph ph-x';
+    });
+    document.querySelectorAll('#mobile-menu a').forEach(a => a.addEventListener('click', () => {
+      document.getElementById('mobile-menu').classList.add('hidden');
+      document.getElementById('mobile-menu-btn').querySelector('i').className = 'ph ph-list';
+    }));
+
+    // ---- Init ----
+    document.getElementById('year').textContent = new Date().getFullYear();
+    setLanguage(currentLanguage);
+    recalcStats();
+    initCounters();
+    typewriter();
+    observeFades();
+    openCookieBanner();
+    if (consent === 'accepted') getPublicIP();
     fetchRepos();
-    getPublicIP();
   </script>
 </body>
-
 </html>
-
-
-
